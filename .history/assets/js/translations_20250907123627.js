@@ -343,21 +343,6 @@ class LanguageManager {
                 option.classList.add('active');
             }
         });
-        
-        // Update language option text
-        document.querySelectorAll('.language-option').forEach(option => {
-            const lang = option.dataset.lang;
-            const flag = option.querySelector('.flag');
-            const text = option.textContent.trim();
-            
-            if (lang === 'ja') {
-                option.innerHTML = `<span class="flag">🇯🇵</span> ${translations[this.currentLanguage]['lang-ja']}`;
-            } else if (lang === 'pt') {
-                option.innerHTML = `<span class="flag">🇧🇷</span> ${translations[this.currentLanguage]['lang-pt']}`;
-            } else if (lang === 'en') {
-                option.innerHTML = `<span class="flag">🇺🇸</span> ${translations[this.currentLanguage]['lang-en']}`;
-            }
-        });
     }
 }
 

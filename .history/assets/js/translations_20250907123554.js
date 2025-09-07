@@ -234,6 +234,7 @@ class LanguageManager {
     }
     
     init() {
+        this.createLanguageSelector();
         this.applyLanguage(this.currentLanguage);
         this.bindEvents();
     }
@@ -246,6 +247,42 @@ class LanguageManager {
         localStorage.setItem('selectedLanguage', lang);
     }
     
+    createLanguageSelector() {
+        console.log('Creating language selector...');
+        const navMenu = document.querySelector('.nav-menu');
+        console.log('Nav menu found:', navMenu);
+        
+        if (!navMenu) {
+            console.error('Nav menu not found!');
+            return;
+        }
+        
+        const languageSelector = document.createElement('li');
+        languageSelector.className = 'nav-item language-selector';
+        languageSelector.innerHTML = `
+            <div class="language-dropdown">
+                <button class="language-btn" aria-label="Select Language">
+                    <i class="fas fa-globe"></i>
+                    <span class="current-lang">${this.getCurrentLanguageName()}</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <ul class="language-menu">
+                    <li><a href="#" data-lang="ja" class="language-option ${this.currentLanguage === 'ja' ? 'active' : ''}">
+                        <span class="flag">🇯🇵</span> ${translations[this.currentLanguage]['lang-ja']}
+                    </a></li>
+                    <li><a href="#" data-lang="pt" class="language-option ${this.currentLanguage === 'pt' ? 'active' : ''}">
+                        <span class="flag">🇧🇷</span> ${translations[this.currentLanguage]['lang-pt']}
+                    </a></li>
+                    <li><a href="#" data-lang="en" class="language-option ${this.currentLanguage === 'en' ? 'active' : ''}">
+                        <span class="flag">🇺🇸</span> ${translations[this.currentLanguage]['lang-en']}
+                    </a></li>
+                </ul>
+            </div>
+        `;
+        
+        navMenu.appendChild(languageSelector);
+        console.log('Language selector added to nav menu');
+    }
     
     getCurrentLanguageName() {
         const names = {
@@ -341,21 +378,6 @@ class LanguageManager {
             option.classList.remove('active');
             if (option.dataset.lang === this.currentLanguage) {
                 option.classList.add('active');
-            }
-        });
-        
-        // Update language option text
-        document.querySelectorAll('.language-option').forEach(option => {
-            const lang = option.dataset.lang;
-            const flag = option.querySelector('.flag');
-            const text = option.textContent.trim();
-            
-            if (lang === 'ja') {
-                option.innerHTML = `<span class="flag">🇯🇵</span> ${translations[this.currentLanguage]['lang-ja']}`;
-            } else if (lang === 'pt') {
-                option.innerHTML = `<span class="flag">🇧🇷</span> ${translations[this.currentLanguage]['lang-pt']}`;
-            } else if (lang === 'en') {
-                option.innerHTML = `<span class="flag">🇺🇸</span> ${translations[this.currentLanguage]['lang-en']}`;
             }
         });
     }

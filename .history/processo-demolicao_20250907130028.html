@@ -55,22 +55,22 @@
                     <li class="nav-item">
                         <a href="index.html#contact" class="nav-link" data-translate="nav-contact">お問い合わせ</a>
                     </li>
-                    <li class="nav-item" style="display: block !important; visibility: visible !important; position: relative;">
-                        <div style="display: inline-block !important; position: relative;">
-                            <button onclick="toggleLanguageMenu()" style="background: #e74c3c; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500;">
-                                <i class="fas fa-globe" style="color: white;"></i>
-                                <span id="current-lang">日本語</span>
+                    <li class="nav-item language-selector" style="display: block !important; visibility: visible !important;">
+                        <div class="language-dropdown" style="display: inline-block !important;">
+                            <button class="language-btn" aria-label="Select Language" style="background: #f8f9fa; border: 1px solid #ddd; padding: 8px 12px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-globe" style="color: #e74c3c;"></i>
+                                <span class="current-lang">日本語</span>
                                 <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
                             </button>
-                            <ul id="language-menu" style="position: absolute; top: 100%; right: 0; background: white; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; min-width: 150px; display: none; list-style: none; margin: 0; padding: 0;">
-                                <li><a href="#" onclick="changeLanguage('ja')" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                                    <span>🇯🇵</span> 日本語
+                            <ul class="language-menu" style="position: absolute; top: 100%; right: 0; background: white; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; min-width: 150px; display: none;">
+                                <li><a href="#" data-lang="ja" class="language-option active" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
+                                    <span class="flag">🇯🇵</span> 日本語
                                 </a></li>
-                                <li><a href="#" onclick="changeLanguage('pt')" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                                    <span>🇧🇷</span> Português
+                                <li><a href="#" data-lang="pt" class="language-option" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
+                                    <span class="flag">🇧🇷</span> Português
                                 </a></li>
-                                <li><a href="#" onclick="changeLanguage('en')" style="display: block; padding: 10px 15px; color: #333; text-decoration: none;">
-                                    <span>🇺🇸</span> English
+                                <li><a href="#" data-lang="en" class="language-option" style="display: block; padding: 10px 15px; color: #333; text-decoration: none;">
+                                    <span class="flag">🇺🇸</span> English
                                 </a></li>
                             </ul>
                         </div>
@@ -539,6 +539,6 @@
 
     <!-- JavaScript -->
     <script src="assets/js/script.js"></script>
-    <script src="assets/js/language-simple.js"></script>
+    <script src="assets/js/translations.js"></script>
 </body>
 </html>

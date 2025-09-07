@@ -262,36 +262,19 @@ class LanguageManager {
             if (e.target.closest('.language-btn')) {
                 e.preventDefault();
                 const dropdown = e.target.closest('.language-dropdown');
-                const menu = dropdown.querySelector('.language-menu');
-                
-                // Toggle dropdown
-                if (menu.style.display === 'block') {
-                    menu.style.display = 'none';
-                } else {
-                    // Close other dropdowns first
-                    document.querySelectorAll('.language-menu').forEach(m => {
-                        m.style.display = 'none';
-                    });
-                    menu.style.display = 'block';
-                }
+                dropdown.classList.toggle('active');
             }
             
             if (e.target.closest('.language-option')) {
                 e.preventDefault();
                 const lang = e.target.closest('.language-option').dataset.lang;
                 this.changeLanguage(lang);
-                
-                // Close dropdown
-                const menu = e.target.closest('.language-menu');
-                if (menu) {
-                    menu.style.display = 'none';
-                }
             }
             
             // Close dropdown when clicking outside
             if (!e.target.closest('.language-dropdown')) {
-                document.querySelectorAll('.language-menu').forEach(menu => {
-                    menu.style.display = 'none';
+                document.querySelectorAll('.language-dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('active');
                 });
             }
         });

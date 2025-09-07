@@ -13,8 +13,8 @@
 }
 
 .language-btn {
-    background: #f8f9fa;
-    border: 1px solid #ddd;
+    background: none;
+    border: none;
     color: #333;
     padding: 0.5rem 1rem;
     cursor: pointer;
@@ -25,8 +25,6 @@
     transition: all 0.3s ease;
     font-size: 0.9rem;
     font-weight: 500;
-    min-width: 120px;
-    justify-content: space-between;
 }
 
 .language-btn:hover {

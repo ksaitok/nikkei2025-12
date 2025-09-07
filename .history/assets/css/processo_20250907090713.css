@@ -480,18 +480,6 @@
         flex-direction: column;
         align-items: center;
     }
-    
-    .documents-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .utility-image {
-        height: 120px;
-    }
-    
-    .document-item img {
-        height: 150px;
-    }
 }
 
 @media (max-width: 480px) {

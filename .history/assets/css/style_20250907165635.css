@@ -98,26 +98,6 @@ p {
     padding: 1rem 0;
 }
 
-/* Logo styles */
-.logo-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-}
-
-.logo-image {
-    height: 50px;
-    width: auto;
-    margin-right: 10px;
-}
-
-.logo-text {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: white;
-}
-
 .nav-container {
     display: flex;
     justify-content: space-between;
@@ -662,14 +642,6 @@ section {
     
     .procedure-image {
         max-width: 100%;
-    }
-    
-    .logo-image {
-        height: 40px;
-    }
-    
-    .logo-text {
-        font-size: 1rem;
     }
 }
 

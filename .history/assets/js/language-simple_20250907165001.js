@@ -439,7 +439,6 @@ const translations = {
         'nav-home': 'Home',
         'nav-services': 'Services',
         'nav-process': 'Demolition Process',
-        'nav-post-fire': 'Post-Fire Demolition',
         'nav-gallery': 'Gallery',
         'nav-company': 'Company',
         'nav-contact': 'Contact',

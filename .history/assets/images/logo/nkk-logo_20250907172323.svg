@@ -1,0 +1,22 @@
+<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="200" height="80" fill="#2c3e50"/>
+  
+  <!-- NKK Logo with 3D effect -->
+  <text x="100" y="35" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+        text-anchor="middle" fill="white" filter="url(#shadow)">
+    NKK
+  </text>
+  
+  <!-- Company name -->
+  <text x="100" y="55" font-family="Arial, sans-serif" font-size="12" 
+        text-anchor="middle" fill="white">
+    Nikkei Kaitai Kogyo
+  </text>
+</svg>

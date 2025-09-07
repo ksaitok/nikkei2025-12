@@ -258,12 +258,7 @@ const translations = {
         'process-cta-title': 'Orçamento é Gratuito',
         'process-cta-desc': 'Se está considerando demolição, entre em contato conosco. Realizamos inspeção local e criamos orçamento detalhado.',
         'process-cta-button': 'Solicitar Orçamento Gratuito',
-        'process-cta-phone': 'Contato por Telefone',
-        'breadcrumb-home': 'Início',
-        'breadcrumb-process': 'Processo de Demolição',
-        'process-overview-title': 'Visão Geral do Processo de Demolição',
-        'process-customer-procedures-title': 'Procedimentos do Cliente',
-        'process-customer-procedures-desc': 'Os procedimentos NTT e CATV devem ser feitos pelo cliente.'
+        'process-cta-phone': 'Contato por Telefone'
     },
     'en': {
         'nav-home': 'Home',
@@ -389,12 +384,7 @@ const translations = {
         'process-cta-title': 'Free Estimate',
         'process-cta-desc': 'If you are considering demolition, please feel free to contact us. We conduct on-site survey and create detailed estimate.',
         'process-cta-button': 'Request Free Estimate',
-        'process-cta-phone': 'Contact by Phone',
-        'breadcrumb-home': 'Home',
-        'breadcrumb-process': 'Demolition Process',
-        'process-overview-title': 'Demolition Process Overview',
-        'process-customer-procedures-title': 'Customer Procedures',
-        'process-customer-procedures-desc': 'NTT and CATV procedures should be handled by the customer.'
+        'process-cta-phone': 'Contact by Phone'
     }
 };
 

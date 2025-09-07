@@ -127,12 +127,7 @@ const translations = {
         'process-cta-title': 'お見積りは無料です',
         'process-cta-desc': '解体工事をご検討の方は、お気軽にお問い合わせください。現地調査を行い、詳細なお見積もりを作成いたします。',
         'process-cta-button': '無料見積もりを依頼する',
-        'process-cta-phone': 'お電話でのお問い合わせ',
-        'breadcrumb-home': 'ホーム',
-        'breadcrumb-process': '工事の流れ',
-        'process-overview-title': '工事の流れ概要',
-        'process-customer-procedures-title': 'お客様でお手続きいただくもの',
-        'process-customer-procedures-desc': 'NTT・CATVの手続きはお客様でお願いします。'
+        'process-cta-phone': 'お電話でのお問い合わせ'
     },
     'pt': {
         'nav-home': 'Início',
@@ -258,12 +253,7 @@ const translations = {
         'process-cta-title': 'Orçamento é Gratuito',
         'process-cta-desc': 'Se está considerando demolição, entre em contato conosco. Realizamos inspeção local e criamos orçamento detalhado.',
         'process-cta-button': 'Solicitar Orçamento Gratuito',
-        'process-cta-phone': 'Contato por Telefone',
-        'breadcrumb-home': 'Início',
-        'breadcrumb-process': 'Processo de Demolição',
-        'process-overview-title': 'Visão Geral do Processo de Demolição',
-        'process-customer-procedures-title': 'Procedimentos do Cliente',
-        'process-customer-procedures-desc': 'Os procedimentos NTT e CATV devem ser feitos pelo cliente.'
+        'process-cta-phone': 'Contato por Telefone'
     },
     'en': {
         'nav-home': 'Home',
@@ -389,12 +379,7 @@ const translations = {
         'process-cta-title': 'Free Estimate',
         'process-cta-desc': 'If you are considering demolition, please feel free to contact us. We conduct on-site survey and create detailed estimate.',
         'process-cta-button': 'Request Free Estimate',
-        'process-cta-phone': 'Contact by Phone',
-        'breadcrumb-home': 'Home',
-        'breadcrumb-process': 'Demolition Process',
-        'process-overview-title': 'Demolition Process Overview',
-        'process-customer-procedures-title': 'Customer Procedures',
-        'process-customer-procedures-desc': 'NTT and CATV procedures should be handled by the customer.'
+        'process-cta-phone': 'Contact by Phone'
     }
 };
 

@@ -389,12 +389,7 @@ const translations = {
         'process-cta-title': 'Free Estimate',
         'process-cta-desc': 'If you are considering demolition, please feel free to contact us. We conduct on-site survey and create detailed estimate.',
         'process-cta-button': 'Request Free Estimate',
-        'process-cta-phone': 'Contact by Phone',
-        'breadcrumb-home': 'Home',
-        'breadcrumb-process': 'Demolition Process',
-        'process-overview-title': 'Demolition Process Overview',
-        'process-customer-procedures-title': 'Customer Procedures',
-        'process-customer-procedures-desc': 'NTT and CATV procedures should be handled by the customer.'
+        'process-cta-phone': 'Contact by Phone'
     }
 };
 

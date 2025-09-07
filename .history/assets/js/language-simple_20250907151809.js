@@ -134,30 +134,7 @@ const translations = {
         'gallery-item-4': 'Heavy Machinery Work',
         'gallery-item-5': 'Site Cleaning',
         'gallery-item-6': 'Safety Management',
-        'contact-title': 'Contact',
-        'workflow-link': 'Click here to see',
-        'workflow-step-1-title': 'Site Survey',
-        'workflow-step-1-desc': 'We thoroughly investigate the site and create an accurate estimate.',
-        'workflow-step-2-title': 'Estimate Submission',
-        'workflow-step-2-desc': 'We submit a detailed estimate and explain.',
-        'workflow-step-3-title': 'Contract and Preparation',
-        'workflow-step-3-desc': 'After the contract, we perform necessary procedures and construction preparation.',
-        'workflow-step-4-title': 'Construction Execution',
-        'workflow-step-4-desc': 'We execute demolition with safety first.',
-        'gallery-desc-1': 'Safe and reliable demolition work',
-        'gallery-desc-4': 'Efficient work with heavy machinery',
-        'company-feature-1': '300 cases per year with rich experience',
-        'company-feature-2': 'Fair price with own construction',
-        'form-option-1': 'Residential Demolition',
-        'form-option-2': 'Post-Fire Demolition',
-        'form-option-3': 'Waste Processing',
-        'form-option-4': 'Carport Removal',
-        'form-option-5': 'Garbage Removal',
-        'footer-service-1': 'Residential Demolition',
-        'footer-service-2': 'Post-Fire Demolition',
-        'footer-service-3': 'Waste Processing',
-        'footer-service-4': 'Carport Removal',
-        'footer-service-5': 'Garbage Removal'
+        'contact-title': 'Contact'
     }
 };
 

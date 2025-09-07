@@ -195,26 +195,7 @@ const translations = {
         'footer-service-2': 'Post-Fire Demolition',
         'footer-service-3': 'Waste Processing',
         'footer-service-4': 'Carport Removal',
-        'footer-service-5': 'Garbage Removal',
-        'workflow-title': 'Work Flow',
-        'workflow-description': 'For detailed demolition flow, ',
-        'workflow-step-0-title': 'Contact',
-        'workflow-step-0-desc': 'Please contact us by phone or email.',
-        'workflow-step-5-title': 'Completion and Cleaning',
-        'workflow-step-5-desc': 'After construction completion, we clean the site and report to the client.',
-        'gallery-desc-2': 'Demolition of fire-damaged building',
-        'gallery-desc-3': 'Manifest management',
-        'gallery-desc-5': 'Cleaning work after construction completion',
-        'gallery-desc-6': 'Work system with safety first',
-        'company-feature-3': 'Quick response to problems during construction',
-        'company-feature-4': 'Rigorous management of industrial waste manifest',
-        'company-feature-5': 'Service in Yokohama, Kawasaki and Chigasaki areas',
-        'company-feature-6': 'Free estimate',
-        'form-select': 'Please select',
-        'form-other': 'Other',
-        'company-title': 'Company Overview',
-        'company-registration': 'Demolition Business Registration Number',
-        'company-registration-number': 'Kanagawa (Reg-29) No. 1842 Tokyo (Reg-30) No. 3481'
+        'footer-service-5': 'Garbage Removal'
     }
 };
 

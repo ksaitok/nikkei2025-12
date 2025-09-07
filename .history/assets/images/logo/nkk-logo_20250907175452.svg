@@ -1,0 +1,32 @@
+<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="bevel" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+      <feOffset dx="1" dy="1" result="offset"/>
+      <feFlood flood-color="rgba(255,255,255,0.3)"/>
+      <feComposite in2="offset" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="1" flood-color="rgba(0,0,0,0.4)"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="200" height="80" fill="#404040"/>
+  
+  <!-- NKK Logo with 3D beveled effect -->
+  <text x="100" y="35" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+        text-anchor="middle" fill="white" filter="url(#bevel) url(#shadow)">
+    NKK
+  </text>
+  
+  <!-- Company name -->
+  <text x="100" y="55" font-family="Arial, sans-serif" font-size="12" 
+        text-anchor="middle" fill="white">
+    Nikkei Kaitai Kogyo
+  </text>
+</svg>

@@ -260,39 +260,21 @@ class GalleryManager {
         const groups = {};
         
         items.forEach(item => {
-            // Usar localização como chave principal para separação
-            const locationKey = item.location || 'Localização não especificada';
-            
+            const locationKey = item.locationGroup || item.location || 'Localização não especificada';
             if (!groups[locationKey]) {
                 groups[locationKey] = {
-                    location: locationKey,
+                    location: item.location || 'Localização não especificada',
                     locationGroup: item.locationGroup,
                     photos: [],
                     category: item.category,
                     date: item.date,
-                    details: item.details,
-                    city: this.extractCity(locationKey),
-                    state: this.extractState(locationKey)
+                    details: item.details
                 };
             }
             groups[locationKey].photos.push(item);
         });
         
         return Object.values(groups);
-    }
-    
-    // Extrair cidade da localização
-    extractCity(location) {
-        if (!location) return 'Cidade não especificada';
-        const parts = location.split(',');
-        return parts[0] ? parts[0].trim() : location;
-    }
-    
-    // Extrair estado da localização
-    extractState(location) {
-        if (!location) return '';
-        const parts = location.split(',');
-        return parts[1] ? parts[1].trim() : '';
     }
     
     // Criar grupo de localização
@@ -304,19 +286,10 @@ class GalleryManager {
         const isMultiplePhotos = group.photos.length > 1;
         const firstPhoto = group.photos[0];
         
-        // Ordenar fotos por índice
-        const sortedPhotos = group.photos.sort((a, b) => (a.photoIndex || 1) - (b.photoIndex || 1));
-        
         groupContainer.innerHTML = `
             <div class="location-header">
-                <div class="location-badge">
-                    <span class="location-number">${groupIndex + 1}</span>
-                </div>
                 <div class="location-info">
-                    <h3 class="location-title">
-                        <span class="location-city">${group.city}</span>
-                        ${group.state ? `<span class="location-state">, ${group.state}</span>` : ''}
-                    </h3>
+                    <h3 class="location-title">${group.location}</h3>
                     <div class="location-meta">
                         <span class="location-category">${this.getCategoryName(group.category)}</span>
                         <span class="location-date">${this.formatDate(group.date)}</span>
@@ -328,7 +301,7 @@ class GalleryManager {
                 </div>
             </div>
             <div class="location-photos">
-                ${sortedPhotos.map((photo, index) => this.createGalleryItemHTML(photo, index)).join('')}
+                ${group.photos.map((photo, index) => this.createGalleryItemHTML(photo, index)).join('')}
             </div>
         `;
         

@@ -629,32 +629,6 @@
     .filter-btn {
         width: 200px;
     }
-    
-    .location-badge {
-        top: -10px;
-        right: 15px;
-        width: 30px;
-        height: 30px;
-        font-size: 0.9rem;
-    }
-    
-    .location-separator {
-        margin: 25px 0;
-        padding: 0 10px;
-    }
-    
-    .separator-text {
-        padding: 0 10px;
-        font-size: 0.75rem;
-    }
-    
-    .location-city {
-        font-size: 1.3rem;
-    }
-    
-    .location-state {
-        font-size: 1rem;
-    }
 }
 
 /* Language Selector Fix */

@@ -566,24 +566,6 @@
         font-size: 0.95rem;
     }
     
-    .location-badge {
-        top: -12px;
-        right: 20px;
-        width: 35px;
-        height: 35px;
-        font-size: 1rem;
-    }
-    
-    .location-separator {
-        margin: 30px 0;
-        padding: 0 15px;
-    }
-    
-    .separator-text {
-        padding: 0 15px;
-        font-size: 0.8rem;
-    }
-    
     .gallery-filters {
         gap: 10px;
     }
@@ -628,32 +610,6 @@
     
     .filter-btn {
         width: 200px;
-    }
-    
-    .location-badge {
-        top: -10px;
-        right: 15px;
-        width: 30px;
-        height: 30px;
-        font-size: 0.9rem;
-    }
-    
-    .location-separator {
-        margin: 25px 0;
-        padding: 0 10px;
-    }
-    
-    .separator-text {
-        padding: 0 10px;
-        font-size: 0.75rem;
-    }
-    
-    .location-city {
-        font-size: 1.3rem;
-    }
-    
-    .location-state {
-        font-size: 1rem;
     }
 }
 

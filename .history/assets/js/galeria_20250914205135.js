@@ -304,19 +304,10 @@ class GalleryManager {
         const isMultiplePhotos = group.photos.length > 1;
         const firstPhoto = group.photos[0];
         
-        // Ordenar fotos por índice
-        const sortedPhotos = group.photos.sort((a, b) => (a.photoIndex || 1) - (b.photoIndex || 1));
-        
         groupContainer.innerHTML = `
             <div class="location-header">
-                <div class="location-badge">
-                    <span class="location-number">${groupIndex + 1}</span>
-                </div>
                 <div class="location-info">
-                    <h3 class="location-title">
-                        <span class="location-city">${group.city}</span>
-                        ${group.state ? `<span class="location-state">, ${group.state}</span>` : ''}
-                    </h3>
+                    <h3 class="location-title">${group.location}</h3>
                     <div class="location-meta">
                         <span class="location-category">${this.getCategoryName(group.category)}</span>
                         <span class="location-date">${this.formatDate(group.date)}</span>
@@ -328,7 +319,7 @@ class GalleryManager {
                 </div>
             </div>
             <div class="location-photos">
-                ${sortedPhotos.map((photo, index) => this.createGalleryItemHTML(photo, index)).join('')}
+                ${group.photos.map((photo, index) => this.createGalleryItemHTML(photo, index)).join('')}
             </div>
         `;
         

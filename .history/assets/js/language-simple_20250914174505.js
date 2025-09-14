@@ -230,12 +230,7 @@ const translations = {
         'multiple-photos': '複数写真',
         'photos-count': '枚の写真',
         'upload-multiple': '複数の画像を選択（Ctrl+Click）',
-        'upload-hint': '同じ場所に複数の画像を選択できます',
-        'footer-company': '会社',
-        'footer-description': 'NKK Nikkei Kaitai Kogyo - 解体・撤去の専門家',
-        'footer-services': 'サービス',
-        'footer-contact': 'お問い合わせ',
-        'footer-rights': 'すべての権利を保有。'
+        'upload-hint': '同じ場所に複数の画像を選択できます'
     },
     'pt': {
         'nav-home': 'Início',
@@ -464,12 +459,7 @@ const translations = {
         'multiple-photos': 'Múltiplas Fotos',
         'photos-count': 'fotos',
         'upload-multiple': 'Escolher Imagens (Ctrl+Click para múltiplas)',
-        'upload-hint': 'Você pode selecionar múltiplas imagens para a mesma localização',
-        'footer-company': 'Empresa',
-        'footer-description': 'NKK Nikkei Kaitai Kogyo - Especialistas em demolição e desmontagem',
-        'footer-services': 'Serviços',
-        'footer-contact': 'Contato',
-        'footer-rights': 'Todos os direitos reservados.'
+        'upload-hint': 'Você pode selecionar múltiplas imagens para a mesma localização'
     },
     'en': {
         'nav-home': 'Home',
@@ -698,12 +688,7 @@ const translations = {
         'multiple-photos': 'Multiple Photos',
         'photos-count': 'photos',
         'upload-multiple': 'Choose Images (Ctrl+Click for multiple)',
-        'upload-hint': 'You can select multiple images for the same location',
-        'footer-company': 'Company',
-        'footer-description': 'NKK Nikkei Kaitai Kogyo - Demolition and dismantling specialists',
-        'footer-services': 'Services',
-        'footer-contact': 'Contact',
-        'footer-rights': 'All rights reserved.'
+        'upload-hint': 'You can select multiple images for the same location'
     }
 };
 
@@ -775,8 +760,8 @@ function applyTranslations(lang) {
 
 // Initialize language
 function initLanguage() {
-    // Get saved language or default to Portuguese for gallery
-    const savedLang = localStorage.getItem('selectedLanguage') || 'pt';
+    // Get saved language or default to Japanese
+    const savedLang = localStorage.getItem('selectedLanguage') || 'ja';
     currentLanguage = savedLang;
     
     // Update current language display
@@ -787,9 +772,6 @@ function initLanguage() {
     
     // Apply translations
     applyTranslations(currentLanguage);
-    
-    // Debug log
-    console.log('Language initialized:', currentLanguage);
 }
 
 // Close menu when clicking outside

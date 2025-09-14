@@ -1,0 +1,411 @@
+// Galeria de Demolições - JavaScript
+
+class GalleryManager {
+    constructor() {
+        this.currentFilter = 'all';
+        this.currentPage = 1;
+        this.itemsPerPage = 6;
+        this.allItems = [];
+        this.filteredItems = [];
+        this.isLoading = false;
+        
+        this.init();
+    }
+    
+    init() {
+        this.loadGalleryData();
+        this.setupEventListeners();
+        this.setupGalleryEventListeners();
+        this.checkAdminAccess();
+    }
+    
+    // Carregar dados da galeria
+    async loadGalleryData() {
+        try {
+            // Simular carregamento de dados (em produção, viria de uma API)
+            this.allItems = [
+                {
+                    id: 1,
+                    title: 'Demolição Residencial - Casa de Madeira',
+                    description: 'Demolição completa de casa residencial de madeira com equipamentos especializados.',
+                    image: 'assets/images/DemolicaoMadeira.jpg',
+                    category: 'residential',
+                    date: '2024-01-15',
+                    location: 'São Paulo, SP'
+                },
+                {
+                    id: 2,
+                    title: 'Demolição Comercial - Edifício de Concreto',
+                    description: 'Demolição de edifício comercial de concreto armado com segurança total.',
+                    image: 'assets/images/DemolicaoRC.jpg',
+                    category: 'commercial',
+                    date: '2024-01-20',
+                    location: 'Rio de Janeiro, RJ'
+                },
+                {
+                    id: 3,
+                    title: 'Demolição Industrial - Galpão Metálico',
+                    description: 'Desmontagem de galpão industrial com estrutura metálica.',
+                    image: 'assets/images/DemolicaoFerro.jpg',
+                    category: 'industrial',
+                    date: '2024-01-25',
+                    location: 'Belo Horizonte, MG'
+                },
+                {
+                    id: 4,
+                    title: 'Demolição Pós-Incêndio - Residência',
+                    description: 'Demolição de residência danificada por incêndio com protocolos especiais.',
+                    image: 'assets/images/DemolicaoPosIncendio.jpg',
+                    category: 'fire-damage',
+                    date: '2024-02-01',
+                    location: 'Curitiba, PR'
+                },
+                {
+                    id: 5,
+                    title: 'Demolição de Estrutura de Concreto',
+                    description: 'Demolição de estrutura de concreto com equipamentos pesados.',
+                    image: 'assets/images/DemolicaoNaiso.jpg',
+                    category: 'commercial',
+                    date: '2024-02-05',
+                    location: 'Porto Alegre, RS'
+                },
+                {
+                    id: 6,
+                    title: 'Corte de Árvores - Preparação para Demolição',
+                    description: 'Corte de árvores como preparação para demolição de terreno.',
+                    image: 'assets/images/CorteArvore.jpg',
+                    category: 'residential',
+                    date: '2024-02-10',
+                    location: 'Salvador, BA'
+                },
+                {
+                    id: 7,
+                    title: 'Equipamentos Pesados em Ação',
+                    description: 'Equipamentos pesados sendo utilizados em demolição industrial.',
+                    image: 'assets/images/EquipPesado.png',
+                    category: 'industrial',
+                    date: '2024-02-15',
+                    location: 'Fortaleza, CE'
+                },
+                {
+                    id: 8,
+                    title: 'Demolição Após Desastre',
+                    description: 'Demolição de estrutura danificada após desastre natural.',
+                    image: 'assets/images/DemolicaoApos.png',
+                    category: 'fire-damage',
+                    date: '2024-02-20',
+                    location: 'Recife, PE'
+                }
+            ];
+            
+            this.filteredItems = [...this.allItems];
+            this.renderGallery();
+            
+        } catch (error) {
+            console.error('Erro ao carregar dados da galeria:', error);
+            this.showError('Erro ao carregar a galeria. Tente novamente.');
+        }
+    }
+    
+    // Configurar event listeners
+    setupEventListeners() {
+        // Filtros
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.setFilter(e.target.dataset.filter);
+            });
+        });
+        
+        // Botão carregar mais
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                this.loadMore();
+            });
+        }
+        
+        // Modal
+        this.setupModal();
+    }
+    
+    // Definir filtro
+    setFilter(filter) {
+        this.currentFilter = filter;
+        this.currentPage = 1;
+        
+        // Atualizar botões ativos
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+        
+        // Filtrar itens
+        if (filter === 'all') {
+            this.filteredItems = [...this.allItems];
+        } else {
+            this.filteredItems = this.allItems.filter(item => item.category === filter);
+        }
+        
+        this.renderGallery();
+    }
+    
+    // Renderizar galeria
+    renderGallery() {
+        const galleryGrid = document.getElementById('gallery-grid');
+        if (!galleryGrid) return;
+        
+        // Limpar grid
+        galleryGrid.innerHTML = '';
+        
+        // Calcular itens para mostrar
+        const itemsToShow = this.currentPage * this.itemsPerPage;
+        const itemsToRender = this.filteredItems.slice(0, itemsToShow);
+        
+        // Agrupar fotos por localização
+        const groupedItems = this.groupPhotosByLocation(itemsToRender);
+        
+        // Renderizar grupos
+        groupedItems.forEach((group, groupIndex) => {
+            const groupContainer = this.createLocationGroup(group, groupIndex);
+            galleryGrid.appendChild(groupContainer);
+        });
+        
+        // Atualizar botão carregar mais
+        this.updateLoadMoreButton();
+    }
+    
+    // Agrupar fotos por localização
+    groupPhotosByLocation(items) {
+        const groups = {};
+        
+        items.forEach(item => {
+            const locationKey = item.location || 'Localização não especificada';
+            if (!groups[locationKey]) {
+                groups[locationKey] = {
+                    location: locationKey,
+                    photos: [],
+                    category: item.category,
+                    date: item.date
+                };
+            }
+            groups[locationKey].photos.push(item);
+        });
+        
+        return Object.values(groups);
+    }
+    
+    // Criar grupo de localização
+    createLocationGroup(group, groupIndex) {
+        const groupContainer = document.createElement('div');
+        groupContainer.className = 'location-group';
+        groupContainer.style.animationDelay = `${groupIndex * 0.1}s`;
+        
+        const isMultiplePhotos = group.photos.length > 1;
+        
+        groupContainer.innerHTML = `
+            <div class="location-header">
+                <h3 class="location-title">${group.location}</h3>
+                <div class="location-meta">
+                    <span class="location-category">${this.getCategoryName(group.category)}</span>
+                    <span class="location-date">${this.formatDate(group.date)}</span>
+                    ${isMultiplePhotos ? `<span class="photo-count">${group.photos.length} <span data-translate="photos-count">fotos</span></span>` : ''}
+                </div>
+            </div>
+            <div class="location-photos">
+                ${group.photos.map((photo, index) => this.createGalleryItemHTML(photo, index)).join('')}
+            </div>
+        `;
+        
+        return groupContainer;
+    }
+    
+    // Criar HTML do item da galeria
+    createGalleryItemHTML(photo, index) {
+        return `
+            <div class="gallery-item" data-photo-id="${photo.id}" style="animation-delay: ${index * 0.05}s">
+                <img src="${photo.image}" alt="${photo.title}" loading="lazy">
+                <div class="gallery-overlay">
+                    <h3>${photo.title}</h3>
+                    <p>${photo.description}</p>
+                    ${photo.photoIndex ? `<span class="photo-index">Foto ${photo.photoIndex} de ${photo.totalPhotos}</span>` : ''}
+                </div>
+                <div class="gallery-info">
+                    <h3>${photo.title}</h3>
+                    <p>${photo.description}</p>
+                    <div class="gallery-meta">
+                        <span class="gallery-category">${this.getCategoryName(photo.category)}</span>
+                        <span class="gallery-date">${this.formatDate(photo.date)}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Configurar event listeners para itens da galeria
+    setupGalleryEventListeners() {
+        const galleryGrid = document.getElementById('gallery-grid');
+        if (!galleryGrid) return;
+        
+        // Usar delegação de eventos para itens dinâmicos
+        galleryGrid.addEventListener('click', (e) => {
+            const galleryItem = e.target.closest('.gallery-item');
+            if (galleryItem) {
+                const photoId = parseInt(galleryItem.dataset.photoId);
+                const photo = this.allItems.find(p => p.id === photoId);
+                if (photo) {
+                    this.openModal(photo);
+                }
+            }
+        });
+    }
+    
+    // Obter nome da categoria
+    getCategoryName(category) {
+        const categories = {
+            'residential': 'Residencial',
+            'commercial': 'Comercial',
+            'industrial': 'Industrial',
+            'fire-damage': 'Pós-Incêndio'
+        };
+        return categories[category] || category;
+    }
+    
+    // Formatar data
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('pt-BR');
+    }
+    
+    // Carregar mais itens
+    loadMore() {
+        if (this.isLoading) return;
+        
+        this.isLoading = true;
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (loadMoreBtn) {
+            loadMoreBtn.textContent = 'Carregando...';
+            loadMoreBtn.disabled = true;
+        }
+        
+        // Simular carregamento
+        setTimeout(() => {
+            this.currentPage++;
+            this.renderGallery();
+            this.isLoading = false;
+            
+            if (loadMoreBtn) {
+                loadMoreBtn.textContent = 'Carregar Mais';
+                loadMoreBtn.disabled = false;
+            }
+        }, 1000);
+    }
+    
+    // Atualizar botão carregar mais
+    updateLoadMoreButton() {
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (!loadMoreBtn) return;
+        
+        const itemsToShow = this.currentPage * this.itemsPerPage;
+        const hasMore = itemsToShow < this.filteredItems.length;
+        
+        if (hasMore) {
+            loadMoreBtn.style.display = 'block';
+        } else {
+            loadMoreBtn.style.display = 'none';
+        }
+    }
+    
+    // Configurar modal
+    setupModal() {
+        // Criar modal se não existir
+        if (!document.getElementById('gallery-modal')) {
+            const modal = document.createElement('div');
+            modal.id = 'gallery-modal';
+            modal.className = 'gallery-modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close">&times;</span>
+                    <img class="modal-image" src="" alt="">
+                    <div class="modal-info">
+                        <h3></h3>
+                        <p></p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Event listeners do modal
+            modal.querySelector('.modal-close').addEventListener('click', () => {
+                this.closeModal();
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeModal();
+                }
+            });
+            
+            // Fechar com ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeModal();
+                }
+            });
+        }
+    }
+    
+    // Abrir modal
+    openModal(item) {
+        const modal = document.getElementById('gallery-modal');
+        const modalImage = modal.querySelector('.modal-image');
+        const modalInfo = modal.querySelector('.modal-info');
+        
+        modalImage.src = item.image;
+        modalImage.alt = item.title;
+        modalInfo.querySelector('h3').textContent = item.title;
+        modalInfo.querySelector('p').textContent = item.description;
+        
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // Fechar modal
+    closeModal() {
+        const modal = document.getElementById('gallery-modal');
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Verificar acesso de admin
+    checkAdminAccess() {
+        // Verificar se há token de admin no localStorage
+        const adminToken = localStorage.getItem('adminToken');
+        const adminLink = document.getElementById('admin-link');
+        
+        if (adminToken && adminLink) {
+            adminLink.style.display = 'block';
+        }
+    }
+    
+    // Mostrar erro
+    showError(message) {
+        const galleryGrid = document.getElementById('gallery-grid');
+        if (galleryGrid) {
+            galleryGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                    <h3>Erro ao carregar galeria</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+    }
+}
+
+// Inicializar galeria quando o DOM estiver carregado
+document.addEventListener('DOMContentLoaded', () => {
+    new GalleryManager();
+});
+
+// As traduções da galeria já estão incluídas no arquivo language-simple.js

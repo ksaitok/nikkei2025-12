@@ -775,8 +775,8 @@ function applyTranslations(lang) {
 
 // Initialize language
 function initLanguage() {
-    // Get saved language or default to Portuguese for gallery
-    const savedLang = localStorage.getItem('selectedLanguage') || 'pt';
+    // Get saved language or default to Japanese
+    const savedLang = localStorage.getItem('selectedLanguage') || 'ja';
     currentLanguage = savedLang;
     
     // Update current language display
@@ -787,9 +787,6 @@ function initLanguage() {
     
     // Apply translations
     applyTranslations(currentLanguage);
-    
-    // Debug log
-    console.log('Language initialized:', currentLanguage);
 }
 
 // Close menu when clicking outside

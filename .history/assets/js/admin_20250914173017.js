@@ -237,45 +237,23 @@ class AdminManager {
         document.getElementById('industrial-count').textContent = industrialCount;
     }
     
-    // Lidar com preview de múltiplas imagens
+    // Lidar com preview de imagem
     handleImagePreview(event) {
-        const files = event.target.files;
+        const file = event.target.files[0];
         const preview = document.getElementById('image-preview');
         
-        if (files && files.length > 0) {
-            preview.innerHTML = '';
-            
-            Array.from(files).forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'image-preview-item';
-                    imageContainer.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview ${index + 1}">
-                        <div class="image-info">
-                            <span>Foto ${index + 1}</span>
-                            <span class="file-size">${this.formatFileSize(file.size)}</span>
-                        </div>
-                    `;
-                    preview.appendChild(imageContainer);
-                };
-                reader.readAsDataURL(file);
-            });
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
         } else {
             preview.innerHTML = '';
         }
     }
     
-    // Formatar tamanho do arquivo
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-    
-    // Lidar com adição de múltiplas fotos
+    // Lidar com adição de foto
     handleAddPhoto() {
         const form = document.getElementById('add-photo-form');
         const formData = new FormData(form);
@@ -286,30 +264,26 @@ class AdminManager {
         const description = formData.get('description');
         const location = formData.get('location');
         const date = formData.get('date');
-        const images = formData.getAll('image');
+        const image = formData.get('image');
         
-        if (!title || !category || !description || !location || !date || images.length === 0) {
-            this.showMessage('Por favor, preencha todos os campos e selecione pelo menos uma imagem!', 'error');
+        if (!title || !category || !description || !location || !date || !image) {
+            this.showMessage('Por favor, preencha todos os campos!', 'error');
             return;
         }
         
-        // Criar múltiplas fotos para a mesma localização
-        const baseId = Date.now();
-        const newPhotos = images.map((image, index) => ({
-            id: baseId + index,
-            title: `${title} - Foto ${index + 1}`,
+        // Criar nova foto
+        const newPhoto = {
+            id: Date.now(), // ID simples baseado em timestamp
+            title: title,
             description: description,
             category: category,
             date: date,
             location: location,
-            image: URL.createObjectURL(image),
-            locationGroup: `${location}_${baseId}`, // Agrupar por localização
-            photoIndex: index + 1,
-            totalPhotos: images.length
-        }));
+            image: URL.createObjectURL(image) // URL temporária para preview
+        };
         
-        // Adicionar todas as fotos à lista
-        this.photos.unshift(...newPhotos);
+        // Adicionar à lista
+        this.photos.unshift(newPhoto);
         
         // Atualizar interface
         this.renderPhotos();
@@ -320,10 +294,10 @@ class AdminManager {
         document.getElementById('image-preview').innerHTML = '';
         
         // Mostrar mensagem de sucesso
-        this.showMessage(`${images.length} foto(s) adicionada(s) com sucesso!`, 'success');
+        this.showMessage('Foto adicionada com sucesso!', 'success');
         
         // Em produção, aqui você faria uma requisição para o backend
-        console.log('Novas fotos adicionadas:', newPhotos);
+        console.log('Nova foto adicionada:', newPhoto);
     }
     
     // Editar foto

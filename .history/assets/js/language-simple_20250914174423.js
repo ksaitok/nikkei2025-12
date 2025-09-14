@@ -684,11 +684,7 @@ const translations = {
         'filter-industrial': 'Industrial',
         'filter-fire': 'Post-Fire',
         'load-more': 'Load More',
-        'admin-panel': 'Admin Panel',
-        'multiple-photos': 'Multiple Photos',
-        'photos-count': 'photos',
-        'upload-multiple': 'Choose Images (Ctrl+Click for multiple)',
-        'upload-hint': 'You can select multiple images for the same location'
+        'admin-panel': 'Admin Panel'
     }
 };
 

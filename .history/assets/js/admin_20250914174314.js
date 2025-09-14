@@ -275,7 +275,7 @@ class AdminManager {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
     
-    // Lidar com adição de múltiplas fotos
+    // Lidar com adição de foto
     handleAddPhoto() {
         const form = document.getElementById('add-photo-form');
         const formData = new FormData(form);
@@ -286,30 +286,26 @@ class AdminManager {
         const description = formData.get('description');
         const location = formData.get('location');
         const date = formData.get('date');
-        const images = formData.getAll('image');
+        const image = formData.get('image');
         
-        if (!title || !category || !description || !location || !date || images.length === 0) {
-            this.showMessage('Por favor, preencha todos os campos e selecione pelo menos uma imagem!', 'error');
+        if (!title || !category || !description || !location || !date || !image) {
+            this.showMessage('Por favor, preencha todos os campos!', 'error');
             return;
         }
         
-        // Criar múltiplas fotos para a mesma localização
-        const baseId = Date.now();
-        const newPhotos = images.map((image, index) => ({
-            id: baseId + index,
-            title: `${title} - Foto ${index + 1}`,
+        // Criar nova foto
+        const newPhoto = {
+            id: Date.now(), // ID simples baseado em timestamp
+            title: title,
             description: description,
             category: category,
             date: date,
             location: location,
-            image: URL.createObjectURL(image),
-            locationGroup: `${location}_${baseId}`, // Agrupar por localização
-            photoIndex: index + 1,
-            totalPhotos: images.length
-        }));
+            image: URL.createObjectURL(image) // URL temporária para preview
+        };
         
-        // Adicionar todas as fotos à lista
-        this.photos.unshift(...newPhotos);
+        // Adicionar à lista
+        this.photos.unshift(newPhoto);
         
         // Atualizar interface
         this.renderPhotos();
@@ -320,10 +316,10 @@ class AdminManager {
         document.getElementById('image-preview').innerHTML = '';
         
         // Mostrar mensagem de sucesso
-        this.showMessage(`${images.length} foto(s) adicionada(s) com sucesso!`, 'success');
+        this.showMessage('Foto adicionada com sucesso!', 'success');
         
         // Em produção, aqui você faria uma requisição para o backend
-        console.log('Novas fotos adicionadas:', newPhotos);
+        console.log('Nova foto adicionada:', newPhoto);
     }
     
     // Editar foto

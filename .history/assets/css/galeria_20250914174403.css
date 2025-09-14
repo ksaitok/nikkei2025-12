@@ -213,18 +213,6 @@
     line-height: 1.5;
 }
 
-.photo-index {
-    display: block;
-    margin-top: 10px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #f39c12;
-    background: rgba(0,0,0,0.3);
-    padding: 4px 8px;
-    border-radius: 4px;
-    display: inline-block;
-}
-
 /* Informações da Galeria */
 .gallery-info {
     padding: 25px;
@@ -413,22 +401,9 @@
         font-size: 1.1rem;
     }
     
-    .location-photos {
+    .gallery-grid {
         grid-template-columns: 1fr;
-        gap: 15px;
-        padding: 20px;
-    }
-    
-    .location-header {
-        padding: 15px 20px;
-    }
-    
-    .location-title {
-        font-size: 1.3rem;
-    }
-    
-    .location-meta {
-        gap: 10px;
+        gap: 20px;
     }
     
     .gallery-filters {

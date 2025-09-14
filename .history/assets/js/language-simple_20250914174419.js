@@ -455,11 +455,7 @@ const translations = {
         'filter-industrial': 'Industrial',
         'filter-fire': 'Pós-Incêndio',
         'load-more': 'Carregar Mais',
-        'admin-panel': 'Painel Admin',
-        'multiple-photos': 'Múltiplas Fotos',
-        'photos-count': 'fotos',
-        'upload-multiple': 'Escolher Imagens (Ctrl+Click para múltiplas)',
-        'upload-hint': 'Você pode selecionar múltiplas imagens para a mesma localização'
+        'admin-panel': 'Painel Admin'
     },
     'en': {
         'nav-home': 'Home',
@@ -684,11 +680,7 @@ const translations = {
         'filter-industrial': 'Industrial',
         'filter-fire': 'Post-Fire',
         'load-more': 'Load More',
-        'admin-panel': 'Admin Panel',
-        'multiple-photos': 'Multiple Photos',
-        'photos-count': 'photos',
-        'upload-multiple': 'Choose Images (Ctrl+Click for multiple)',
-        'upload-hint': 'You can select multiple images for the same location'
+        'admin-panel': 'Admin Panel'
     }
 };
 

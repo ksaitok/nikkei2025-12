@@ -15,7 +15,6 @@ class GalleryManager {
     init() {
         this.loadGalleryData();
         this.setupEventListeners();
-        this.setupGalleryEventListeners();
         this.checkAdminAccess();
     }
     
@@ -209,7 +208,7 @@ class GalleryManager {
                 <div class="location-meta">
                     <span class="location-category">${this.getCategoryName(group.category)}</span>
                     <span class="location-date">${this.formatDate(group.date)}</span>
-                    ${isMultiplePhotos ? `<span class="photo-count">${group.photos.length} <span data-translate="photos-count">fotos</span></span>` : ''}
+                    ${isMultiplePhotos ? `<span class="photo-count">${group.photos.length} fotos</span>` : ''}
                 </div>
             </div>
             <div class="location-photos">
@@ -242,22 +241,34 @@ class GalleryManager {
         `;
     }
     
-    // Configurar event listeners para itens da galeria
-    setupGalleryEventListeners() {
-        const galleryGrid = document.getElementById('gallery-grid');
-        if (!galleryGrid) return;
+    // Criar item da galeria
+    createGalleryItem(item, index) {
+        const div = document.createElement('div');
+        div.className = 'gallery-item';
+        div.style.animationDelay = `${index * 0.1}s`;
         
-        // Usar delegação de eventos para itens dinâmicos
-        galleryGrid.addEventListener('click', (e) => {
-            const galleryItem = e.target.closest('.gallery-item');
-            if (galleryItem) {
-                const photoId = parseInt(galleryItem.dataset.photoId);
-                const photo = this.allItems.find(p => p.id === photoId);
-                if (photo) {
-                    this.openModal(photo);
-                }
-            }
+        div.innerHTML = `
+            <img src="${item.image}" alt="${item.title}" loading="lazy">
+            <div class="gallery-overlay">
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+            </div>
+            <div class="gallery-info">
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+                <div class="gallery-meta">
+                    <span class="gallery-category">${this.getCategoryName(item.category)}</span>
+                    <span class="gallery-date">${this.formatDate(item.date)}</span>
+                </div>
+            </div>
+        `;
+        
+        // Adicionar evento de clique para modal
+        div.addEventListener('click', () => {
+            this.openModal(item);
         });
+        
+        return div;
     }
     
     // Obter nome da categoria

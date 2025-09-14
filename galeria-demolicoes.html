@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Demolições - NKK Nikkei Kaitai Kogyo</title>
+    <meta name="description" content="Galeria de fotos das demolições realizadas pela NKK Nikkei Kaitai Kogyo">
+    
+    <!-- Preconnect para performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/language-selector.css">
+    <link rel="stylesheet" href="assets/css/galeria.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/logo/nkk-logo.svg">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <!-- Logo -->
+                <a href="index.html" class="logo-link">
+                    <img src="assets/images/logo/nkk-logo.svg" alt="NKK Logo" class="logo-image">
+                    <span class="logo-text">NKK</span>
+                </a>
+                
+                <!-- Navigation Menu -->
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link" data-translate="nav-home">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="processo-demolicao.html" class="nav-link" data-translate="nav-process">Processo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="post-fire-demolition.html" class="nav-link" data-translate="nav-fire">Pós-Incêndio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="galeria-demolicoes.html" class="nav-link active" data-translate="nav-gallery">Galeria</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link" data-translate="nav-contact">Contato</a>
+                    </li>
+                    
+                    <!-- Language Selector -->
+                    <li class="nav-item language-selector" style="display: block !important; visibility: visible !important; opacity: 1 !important;">
+                        <button class="language-btn" onclick="toggleLanguageMenu()" style="background-color: #c0392b; border: 1px solid #c0392b; padding: 8px 12px; min-width: 60px; color: white; border-radius: 4px;">
+                            <i class="fas fa-globe"></i> <span id="current-lang">PT</span>
+                        </button>
+                        <ul class="language-menu" id="language-menu">
+                            <li><a href="#" onclick="changeLanguage('pt')" class="language-option">🇧🇷 Português</a></li>
+                            <li><a href="#" onclick="changeLanguage('ja')" class="language-option">🇯🇵 日本語</a></li>
+                            <li><a href="#" onclick="changeLanguage('en')" class="language-option">🇺🇸 English</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <!-- Mobile Menu Toggle -->
+                <div class="nav-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gallery">
+        <div class="hero-content">
+            <h1 data-translate="gallery-title">Galeria de Demolições</h1>
+            <p data-translate="gallery-subtitle">Conheça nosso trabalho através das fotos das demolições realizadas</p>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="container">
+            <!-- Filter Buttons -->
+            <div class="gallery-filters">
+                <button class="filter-btn active" data-filter="all" data-translate="filter-all">Todas</button>
+                <button class="filter-btn" data-filter="residential" data-translate="filter-residential">Residencial</button>
+                <button class="filter-btn" data-filter="commercial" data-translate="filter-commercial">Comercial</button>
+                <button class="filter-btn" data-filter="industrial" data-translate="filter-industrial">Industrial</button>
+                <button class="filter-btn" data-filter="fire-damage" data-translate="filter-fire">Pós-Incêndio</button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- Fotos serão carregadas dinamicamente via JavaScript -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-container">
+                <button class="load-more-btn" id="load-more-btn" data-translate="load-more">Carregar Mais</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Link (visível apenas para admins) -->
+    <div class="admin-link" id="admin-link" style="display: none;">
+        <a href="admin.html" class="admin-btn" data-translate="admin-panel">Painel Admin</a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 data-translate="footer-company">Empresa</h3>
+                    <p data-translate="footer-description">NKK Nikkei Kaitai Kogyo - Especialistas em demolição e desmontagem</p>
+                </div>
+                <div class="footer-section">
+                    <h4 data-translate="footer-services">Serviços</h4>
+                    <ul>
+                        <li><a href="processo-demolicao.html" data-translate="nav-process">Processo de Demolição</a></li>
+                        <li><a href="post-fire-demolition.html" data-translate="nav-fire">Demolição Pós-Incêndio</a></li>
+                        <li><a href="galeria-demolicoes.html" data-translate="nav-gallery">Galeria</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 data-translate="footer-contact">Contato</h4>
+                    <p>📧 info@nkk.com.br</p>
+                    <p>📞 (11) 99999-9999</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 NKK Nikkei Kaitai Kogyo. <span data-translate="footer-rights">Todos os direitos reservados.</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/language-simple.js"></script>
+    <script src="assets/js/galeria.js"></script>
+</body>
+</html>

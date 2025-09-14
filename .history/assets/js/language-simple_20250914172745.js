@@ -442,16 +442,7 @@ const translations = {
         'post-fire-summary-conclusion': 'Os 3 pontos acima são diretrizes para escolher empresa de demolição, esperamos que seja útil como referência.',
         'post-fire-cta-title': 'Para aqueles com problemas na demolição pós-incêndio',
         'post-fire-cta-desc': 'Apoiamos com coração aqueles que estão com problemas devido a tragédia súbita. Sinta-se à vontade para consultar.',
-        'post-fire-cta-button': 'Formulário de Contato',
-        'gallery-title': 'Galeria de Demolições',
-        'gallery-subtitle': 'Conheça nosso trabalho através das fotos das demolições realizadas',
-        'filter-all': 'Todas',
-        'filter-residential': 'Residencial',
-        'filter-commercial': 'Comercial',
-        'filter-industrial': 'Industrial',
-        'filter-fire': 'Pós-Incêndio',
-        'load-more': 'Carregar Mais',
-        'admin-panel': 'Painel Admin'
+        'post-fire-cta-button': 'Formulário de Contato'
     },
     'en': {
         'nav-home': 'Home',
@@ -667,16 +658,7 @@ const translations = {
         'post-fire-summary-conclusion': 'The above 3 points are guidelines for choosing a demolition company, we hope it will be useful as a reference.',
         'post-fire-cta-title': 'For those with problems in post-fire demolition',
         'post-fire-cta-desc': 'We support with heart those who are in trouble due to sudden tragedy. Feel free to consult.',
-        'post-fire-cta-button': 'Contact Form',
-        'gallery-title': 'Demolition Gallery',
-        'gallery-subtitle': 'See our work through photos of completed demolitions',
-        'filter-all': 'All',
-        'filter-residential': 'Residential',
-        'filter-commercial': 'Commercial',
-        'filter-industrial': 'Industrial',
-        'filter-fire': 'Post-Fire',
-        'load-more': 'Load More',
-        'admin-panel': 'Admin Panel'
+        'post-fire-cta-button': 'Contact Form'
     }
 };
 

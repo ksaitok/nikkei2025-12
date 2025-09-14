@@ -667,16 +667,7 @@ const translations = {
         'post-fire-summary-conclusion': 'The above 3 points are guidelines for choosing a demolition company, we hope it will be useful as a reference.',
         'post-fire-cta-title': 'For those with problems in post-fire demolition',
         'post-fire-cta-desc': 'We support with heart those who are in trouble due to sudden tragedy. Feel free to consult.',
-        'post-fire-cta-button': 'Contact Form',
-        'gallery-title': 'Demolition Gallery',
-        'gallery-subtitle': 'See our work through photos of completed demolitions',
-        'filter-all': 'All',
-        'filter-residential': 'Residential',
-        'filter-commercial': 'Commercial',
-        'filter-industrial': 'Industrial',
-        'filter-fire': 'Post-Fire',
-        'load-more': 'Load More',
-        'admin-panel': 'Admin Panel'
+        'post-fire-cta-button': 'Contact Form'
     }
 };
 

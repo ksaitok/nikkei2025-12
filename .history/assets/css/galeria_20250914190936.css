@@ -484,25 +484,15 @@
     }
     
     .location-header {
-        padding: 20px 25px;
-        gap: 12px;
+        padding: 15px 20px;
     }
     
     .location-title {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
     
     .location-meta {
         gap: 10px;
-        flex-wrap: wrap;
-    }
-    
-    .location-details {
-        padding: 12px 15px;
-    }
-    
-    .location-description {
-        font-size: 0.95rem;
     }
     
     .gallery-filters {

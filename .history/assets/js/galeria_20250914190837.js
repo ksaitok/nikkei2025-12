@@ -245,15 +245,13 @@ class GalleryManager {
         const groups = {};
         
         items.forEach(item => {
-            const locationKey = item.locationGroup || item.location || 'Localização não especificada';
+            const locationKey = item.location || 'Localização não especificada';
             if (!groups[locationKey]) {
                 groups[locationKey] = {
-                    location: item.location || 'Localização não especificada',
-                    locationGroup: item.locationGroup,
+                    location: locationKey,
                     photos: [],
                     category: item.category,
-                    date: item.date,
-                    details: item.details
+                    date: item.date
                 };
             }
             groups[locationKey].photos.push(item);
@@ -269,20 +267,14 @@ class GalleryManager {
         groupContainer.style.animationDelay = `${groupIndex * 0.1}s`;
         
         const isMultiplePhotos = group.photos.length > 1;
-        const firstPhoto = group.photos[0];
         
         groupContainer.innerHTML = `
             <div class="location-header">
-                <div class="location-info">
-                    <h3 class="location-title">${group.location}</h3>
-                    <div class="location-meta">
-                        <span class="location-category">${this.getCategoryName(group.category)}</span>
-                        <span class="location-date">${this.formatDate(group.date)}</span>
-                        ${isMultiplePhotos ? `<span class="photo-count">${group.photos.length} <span data-translate="photos-count">fotos</span></span>` : ''}
-                    </div>
-                </div>
-                <div class="location-details">
-                    <p class="location-description">${firstPhoto.details || firstPhoto.description}</p>
+                <h3 class="location-title">${group.location}</h3>
+                <div class="location-meta">
+                    <span class="location-category">${this.getCategoryName(group.category)}</span>
+                    <span class="location-date">${this.formatDate(group.date)}</span>
+                    ${isMultiplePhotos ? `<span class="photo-count">${group.photos.length} <span data-translate="photos-count">fotos</span></span>` : ''}
                 </div>
             </div>
             <div class="location-photos">

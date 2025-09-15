@@ -406,9 +406,6 @@ class AdminManager {
             this.photos[photoIndex].image = URL.createObjectURL(newImage);
         }
         
-        // Salvar no localStorage
-        this.savePhotos();
-        
         // Atualizar interface
         this.renderPhotos();
         this.updateStats();
@@ -430,7 +427,6 @@ class AdminManager {
     deletePhoto(id) {
         if (confirm('Tem certeza que deseja excluir esta foto?')) {
             this.photos = this.photos.filter(p => p.id !== id);
-            this.savePhotos();
             this.renderPhotos();
             this.updateStats();
             this.showMessage('Foto excluída com sucesso!', 'success');

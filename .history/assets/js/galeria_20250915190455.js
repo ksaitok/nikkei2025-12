@@ -17,19 +17,13 @@ class GalleryManager {
         this.setupEventListeners();
         this.setupGalleryEventListeners();
         this.checkAdminAccess();
-        this.setupStorageListener();
     }
     
     // Carregar dados da galeria
     async loadGalleryData() {
         try {
-            // Carregar dados do localStorage ou usar dados padrão
-            const savedPhotos = localStorage.getItem('galleryPhotos');
-            if (savedPhotos) {
-                this.allItems = JSON.parse(savedPhotos);
-            } else {
-                // Dados padrão
-                this.allItems = [
+            // Simular carregamento de dados (em produção, viria de uma API)
+            this.allItems = [
                 // Localização 1: São Paulo, SP - Múltiplas fotos
                 {
                     id: 1,
@@ -167,11 +161,7 @@ class GalleryManager {
                     totalPhotos: 1,
                     details: 'Residência de 150m² danificada por incêndio, demolição com protocolos de segurança'
                 }
-                ];
-                
-                // Salvar dados padrão no localStorage
-                localStorage.setItem('galleryPhotos', JSON.stringify(this.allItems));
-            }
+            ];
             
             this.filteredItems = [...this.allItems];
             this.renderGallery();
@@ -180,30 +170,6 @@ class GalleryManager {
             console.error('Erro ao carregar dados da galeria:', error);
             this.showError('Erro ao carregar a galeria. Tente novamente.');
         }
-    }
-    
-    // Configurar listener para mudanças no localStorage
-    setupStorageListener() {
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'galleryPhotos') {
-                // Recarregar dados quando houver mudanças
-                this.loadGalleryData();
-            }
-        });
-        
-        // Também escutar mudanças no mesmo tab (para quando o admin adiciona fotos)
-        const originalSetItem = localStorage.setItem;
-        localStorage.setItem = function(key, value) {
-            originalSetItem.apply(this, arguments);
-            if (key === 'galleryPhotos') {
-                // Disparar evento customizado
-                window.dispatchEvent(new CustomEvent('galleryUpdated'));
-            }
-        };
-        
-        window.addEventListener('galleryUpdated', () => {
-            this.loadGalleryData();
-        });
     }
     
     // Configurar event listeners

@@ -182,30 +182,6 @@ class GalleryManager {
         }
     }
     
-    // Configurar listener para mudanças no localStorage
-    setupStorageListener() {
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'galleryPhotos') {
-                // Recarregar dados quando houver mudanças
-                this.loadGalleryData();
-            }
-        });
-        
-        // Também escutar mudanças no mesmo tab (para quando o admin adiciona fotos)
-        const originalSetItem = localStorage.setItem;
-        localStorage.setItem = function(key, value) {
-            originalSetItem.apply(this, arguments);
-            if (key === 'galleryPhotos') {
-                // Disparar evento customizado
-                window.dispatchEvent(new CustomEvent('galleryUpdated'));
-            }
-        };
-        
-        window.addEventListener('galleryUpdated', () => {
-            this.loadGalleryData();
-        });
-    }
-    
     // Configurar event listeners
     setupEventListeners() {
         // Filtros

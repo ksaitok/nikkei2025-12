@@ -17,7 +17,6 @@ class GalleryManager {
         this.setupEventListeners();
         this.setupGalleryEventListeners();
         this.checkAdminAccess();
-        this.setupStorageListener();
     }
     
     // Carregar dados da galeria
@@ -180,30 +179,6 @@ class GalleryManager {
             console.error('Erro ao carregar dados da galeria:', error);
             this.showError('Erro ao carregar a galeria. Tente novamente.');
         }
-    }
-    
-    // Configurar listener para mudanças no localStorage
-    setupStorageListener() {
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'galleryPhotos') {
-                // Recarregar dados quando houver mudanças
-                this.loadGalleryData();
-            }
-        });
-        
-        // Também escutar mudanças no mesmo tab (para quando o admin adiciona fotos)
-        const originalSetItem = localStorage.setItem;
-        localStorage.setItem = function(key, value) {
-            originalSetItem.apply(this, arguments);
-            if (key === 'galleryPhotos') {
-                // Disparar evento customizado
-                window.dispatchEvent(new CustomEvent('galleryUpdated'));
-            }
-        };
-        
-        window.addEventListener('galleryUpdated', () => {
-            this.loadGalleryData();
-        });
     }
     
     // Configurar event listeners

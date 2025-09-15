@@ -260,7 +260,7 @@ class GalleryManager {
         const groups = {};
         
         items.forEach(item => {
-            // Usar localização completa como chave principal para separação
+            // Usar localização como chave principal para separação
             const locationKey = item.location || 'Localização não especificada';
             
             if (!groups[locationKey]) {
@@ -272,9 +272,7 @@ class GalleryManager {
                     date: item.date,
                     details: item.details,
                     city: this.extractCity(locationKey),
-                    state: this.extractState(locationKey),
-                    fullAddress: locationKey, // Endereço completo
-                    demolitionType: this.getCategoryName(item.category)
+                    state: this.extractState(locationKey)
                 };
             }
             groups[locationKey].photos.push(item);
@@ -321,7 +319,7 @@ class GalleryManager {
                     </h3>
                     <div class="location-address">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span class="address-text">${group.fullAddress}</span>
+                        <span class="address-text">${group.location}</span>
                     </div>
                     <div class="location-meta">
                         <span class="location-category">${this.getCategoryName(group.category)}</span>
@@ -333,7 +331,7 @@ class GalleryManager {
                     <div class="demolition-type">
                         <i class="fas fa-hammer"></i>
                         <span class="type-label">Tipo de Demolição:</span>
-                        <span class="type-value">${group.demolitionType}</span>
+                        <span class="type-value">${this.getCategoryName(group.category)}</span>
                     </div>
                     <p class="location-description">${firstPhoto.details || firstPhoto.description}</p>
                 </div>

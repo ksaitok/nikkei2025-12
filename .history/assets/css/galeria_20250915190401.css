@@ -92,27 +92,14 @@
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border: 2px solid #ecf0f1;
-    position: relative;
 }
 
 .location-group:hover {
     transform: translateY(-5px);
     border-color: #e74c3c;
     box-shadow: 0 15px 40px rgba(231, 76, 60, 0.15);
-}
-
-/* Indicador de múltiplas fotos */
-.location-group::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #e74c3c, #c0392b, #e74c3c);
-    z-index: 1;
 }
 
 /* Separador entre Localizações */

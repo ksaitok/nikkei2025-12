@@ -92,27 +92,14 @@
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     transition: transform 0.3s ease;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border: 2px solid #ecf0f1;
-    position: relative;
 }
 
 .location-group:hover {
     transform: translateY(-5px);
     border-color: #e74c3c;
     box-shadow: 0 15px 40px rgba(231, 76, 60, 0.15);
-}
-
-/* Indicador de múltiplas fotos */
-.location-group::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #e74c3c, #c0392b, #e74c3c);
-    z-index: 1;
 }
 
 /* Separador entre Localizações */
@@ -204,30 +191,6 @@
     font-size: 1.2rem;
 }
 
-/* Endereço da Localização */
-.location-address {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 8px 0;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    border-left: 3px solid #e74c3c;
-}
-
-.location-address i {
-    color: #e74c3c;
-    font-size: 1rem;
-}
-
-.address-text {
-    color: #ecf0f1;
-    font-size: 0.95rem;
-    font-weight: 500;
-    line-height: 1.4;
-}
-
 .location-meta {
     display: flex;
     gap: 15px;
@@ -291,38 +254,6 @@
     line-height: 1.6;
     color: #ecf0f1;
     font-weight: 400;
-}
-
-/* Tipo de Demolição */
-.demolition-type {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    padding: 12px 15px;
-    background: rgba(231, 76, 60, 0.1);
-    border-radius: 10px;
-    border: 1px solid rgba(231, 76, 60, 0.2);
-}
-
-.demolition-type i {
-    color: #e74c3c;
-    font-size: 1.1rem;
-}
-
-.type-label {
-    color: #ecf0f1;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.type-value {
-    color: #e74c3c;
-    font-weight: 700;
-    font-size: 1rem;
-    background: rgba(231, 76, 60, 0.2);
-    padding: 4px 8px;
-    border-radius: 6px;
 }
 
 /* Fotos da Localização */
@@ -723,32 +654,6 @@
     
     .location-state {
         font-size: 1rem;
-    }
-    
-    .location-address {
-        padding: 6px 10px;
-        margin: 6px 0;
-    }
-    
-    .address-text {
-        font-size: 0.9rem;
-    }
-    
-    .demolition-type {
-        padding: 10px 12px;
-        margin-bottom: 12px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .type-label {
-        font-size: 0.9rem;
-    }
-    
-    .type-value {
-        font-size: 0.95rem;
-        padding: 3px 6px;
     }
 }
 

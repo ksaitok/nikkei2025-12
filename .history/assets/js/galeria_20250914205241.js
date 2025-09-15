@@ -260,7 +260,7 @@ class GalleryManager {
         const groups = {};
         
         items.forEach(item => {
-            // Usar localização completa como chave principal para separação
+            // Usar localização como chave principal para separação
             const locationKey = item.location || 'Localização não especificada';
             
             if (!groups[locationKey]) {
@@ -272,9 +272,7 @@ class GalleryManager {
                     date: item.date,
                     details: item.details,
                     city: this.extractCity(locationKey),
-                    state: this.extractState(locationKey),
-                    fullAddress: locationKey, // Endereço completo
-                    demolitionType: this.getCategoryName(item.category)
+                    state: this.extractState(locationKey)
                 };
             }
             groups[locationKey].photos.push(item);
@@ -319,10 +317,6 @@ class GalleryManager {
                         <span class="location-city">${group.city}</span>
                         ${group.state ? `<span class="location-state">, ${group.state}</span>` : ''}
                     </h3>
-                    <div class="location-address">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span class="address-text">${group.fullAddress}</span>
-                    </div>
                     <div class="location-meta">
                         <span class="location-category">${this.getCategoryName(group.category)}</span>
                         <span class="location-date">${this.formatDate(group.date)}</span>
@@ -330,11 +324,6 @@ class GalleryManager {
                     </div>
                 </div>
                 <div class="location-details">
-                    <div class="demolition-type">
-                        <i class="fas fa-hammer"></i>
-                        <span class="type-label">Tipo de Demolição:</span>
-                        <span class="type-value">${group.demolitionType}</span>
-                    </div>
                     <p class="location-description">${firstPhoto.details || firstPhoto.description}</p>
                 </div>
             </div>

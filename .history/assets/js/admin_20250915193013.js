@@ -237,103 +237,31 @@ class AdminManager {
     
     // Renderizar fotos
     renderPhotos() {
-        this.filteredPhotos = [...this.photos];
-        this.filterAndSortDemolitions();
-    }
-    
-    // Filtrar e ordenar demolições
-    filterAndSortDemolitions() {
-        const categoryFilter = document.getElementById('category-filter')?.value || 'all';
-        const searchInput = document.getElementById('search-input')?.value || '';
-        const sortBy = document.getElementById('sort-by')?.value || 'date-desc';
+        const photosGrid = document.getElementById('photos-grid');
+        if (!photosGrid) return;
         
-        // Filtrar por categoria
-        let filtered = this.photos;
-        if (categoryFilter !== 'all') {
-            filtered = filtered.filter(photo => photo.category === categoryFilter);
-        }
+        photosGrid.innerHTML = '';
         
-        // Filtrar por busca
-        if (searchInput) {
-            const searchLower = searchInput.toLowerCase();
-            filtered = filtered.filter(photo => 
-                photo.title.toLowerCase().includes(searchLower) ||
-                photo.location.toLowerCase().includes(searchLower) ||
-                photo.description.toLowerCase().includes(searchLower)
-            );
-        }
-        
-        // Ordenar
-        filtered.sort((a, b) => {
-            switch (sortBy) {
-                case 'date-desc':
-                    return new Date(b.date) - new Date(a.date);
-                case 'date-asc':
-                    return new Date(a.date) - new Date(b.date);
-                case 'title-asc':
-                    return a.title.localeCompare(b.title);
-                case 'title-desc':
-                    return b.title.localeCompare(a.title);
-                case 'location-asc':
-                    return a.location.localeCompare(b.location);
-                default:
-                    return 0;
-            }
-        });
-        
-        this.filteredPhotos = filtered;
-        this.renderDemolitionsGrid();
-        this.renderPagination();
-    }
-    
-    // Renderizar grid de demolições
-    renderDemolitionsGrid() {
-        const demolitionsGrid = document.getElementById('demolitions-grid');
-        if (!demolitionsGrid) return;
-        
-        demolitionsGrid.innerHTML = '';
-        
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        const photosToShow = this.filteredPhotos.slice(startIndex, endIndex);
-        
-        photosToShow.forEach(photo => {
-            const demolitionCard = this.createDemolitionCard(photo);
-            demolitionsGrid.appendChild(demolitionCard);
+        this.photos.forEach(photo => {
+            const photoItem = this.createPhotoItem(photo);
+            photosGrid.appendChild(photoItem);
         });
     }
     
-    // Criar card de demolição
-    createDemolitionCard(photo) {
-        const card = document.createElement('div');
-        card.className = 'demolition-card';
-        
-        card.innerHTML = `
-            <div class="demolition-image">
-                <img src="${photo.image}" alt="${photo.title}" loading="lazy">
-                <div class="demolition-badge">${this.getCategoryName(photo.category)}</div>
-            </div>
-            <div class="demolition-content">
-                <h3 class="demolition-title">${photo.title}</h3>
-                <p class="demolition-description">${photo.description}</p>
-                <div class="demolition-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>${photo.location}</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>${this.formatDate(photo.date)}</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-images"></i>
-                        <span>${photo.totalPhotos || 1} foto(s)</span>
-                    </div>
+    // Criar item de foto
+    createPhotoItem(photo) {
+        const div = document.createElement('div');
+        div.className = 'photo-item';
+        div.innerHTML = `
+            <img src="${photo.image}" alt="${photo.title}" loading="lazy">
+            <div class="photo-info">
+                <h3>${photo.title}</h3>
+                <p>${photo.description}</p>
+                <div class="photo-meta">
+                    <span class="photo-category">${this.getCategoryName(photo.category)}</span>
+                    <span class="photo-date">${this.formatDate(photo.date)}</span>
                 </div>
-                <div class="demolition-actions">
-                    <button class="btn-view" onclick="adminManager.viewPhoto(${photo.id})">
-                        <i class="fas fa-eye"></i> Ver
-                    </button>
+                <div class="photo-actions">
                     <button class="btn-edit" onclick="adminManager.editPhoto(${photo.id})">
                         <i class="fas fa-edit"></i> Editar
                     </button>
@@ -344,90 +272,8 @@ class AdminManager {
             </div>
         `;
         
-        return card;
+        return div;
     }
-    
-    // Renderizar paginação
-    renderPagination() {
-        const pagination = document.getElementById('pagination');
-        if (!pagination) return;
-        
-        const totalPages = Math.ceil(this.filteredPhotos.length / this.itemsPerPage);
-        
-        if (totalPages <= 1) {
-            pagination.innerHTML = '';
-            return;
-        }
-        
-        let paginationHTML = '';
-        
-        // Botão anterior
-        paginationHTML += `
-            <button ${this.currentPage === 1 ? 'disabled' : ''} onclick="adminManager.goToPage(${this.currentPage - 1})">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        `;
-        
-        // Páginas
-        for (let i = 1; i <= totalPages; i++) {
-            if (i === 1 || i === totalPages || (i >= this.currentPage - 2 && i <= this.currentPage + 2)) {
-                paginationHTML += `
-                    <button class="${i === this.currentPage ? 'active' : ''}" onclick="adminManager.goToPage(${i})">
-                        ${i}
-                    </button>
-                `;
-            } else if (i === this.currentPage - 3 || i === this.currentPage + 3) {
-                paginationHTML += '<span>...</span>';
-            }
-        }
-        
-        // Botão próximo
-        paginationHTML += `
-            <button ${this.currentPage === totalPages ? 'disabled' : ''} onclick="adminManager.goToPage(${this.currentPage + 1})">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        `;
-        
-        // Informações
-        const startItem = (this.currentPage - 1) * this.itemsPerPage + 1;
-        const endItem = Math.min(this.currentPage * this.itemsPerPage, this.filteredPhotos.length);
-        
-        paginationHTML += `
-            <div class="pagination-info">
-                ${startItem}-${endItem} de ${this.filteredPhotos.length} demolições
-            </div>
-        `;
-        
-        pagination.innerHTML = paginationHTML;
-    }
-    
-    // Ir para página
-    goToPage(page) {
-        const totalPages = Math.ceil(this.filteredPhotos.length / this.itemsPerPage);
-        if (page >= 1 && page <= totalPages) {
-            this.currentPage = page;
-            this.renderDemolitionsGrid();
-            this.renderPagination();
-        }
-    }
-    
-    // Mostrar formulário de adicionar foto
-    showAddPhotoForm() {
-        const addPhotoForm = document.getElementById('add-photo-form');
-        if (addPhotoForm) {
-            addPhotoForm.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-    
-    // Ver foto
-    viewPhoto(id) {
-        const photo = this.photos.find(p => p.id === id);
-        if (photo) {
-            // Abrir em nova aba
-            window.open(photo.image, '_blank');
-        }
-    }
-    
     
     // Obter nome da categoria
     getCategoryName(category) {

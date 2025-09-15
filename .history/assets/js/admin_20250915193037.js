@@ -428,6 +428,32 @@ class AdminManager {
         }
     }
     
+    // Criar item de foto
+    createPhotoItem(photo) {
+        const div = document.createElement('div');
+        div.className = 'photo-item';
+        div.innerHTML = `
+            <img src="${photo.image}" alt="${photo.title}" loading="lazy">
+            <div class="photo-info">
+                <h3>${photo.title}</h3>
+                <p>${photo.description}</p>
+                <div class="photo-meta">
+                    <span class="photo-category">${this.getCategoryName(photo.category)}</span>
+                    <span class="photo-date">${this.formatDate(photo.date)}</span>
+                </div>
+                <div class="photo-actions">
+                    <button class="btn-edit" onclick="adminManager.editPhoto(${photo.id})">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn-delete" onclick="adminManager.deletePhoto(${photo.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        return div;
+    }
     
     // Obter nome da categoria
     getCategoryName(category) {

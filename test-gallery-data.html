@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Dados da Galeria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .gallery-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .gallery-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            background: white;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .gallery-item .info {
+            padding: 10px;
+        }
+        .gallery-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+        .gallery-item p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste de Dados da Galeria</h1>
+        <p>Esta página testa se os dados estão sendo salvos e carregados corretamente.</p>
+    </div>
+
+    <div class="container">
+        <div class="test-section">
+            <h3>📊 Status do Sistema</h3>
+            <div id="system-status"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🗄️ Teste de IndexedDB</h3>
+            <button onclick="testIndexedDB()">Testar IndexedDB</button>
+            <button onclick="addSampleData()">Adicionar Dados de Exemplo</button>
+            <button onclick="loadIndexedDBData()">Carregar Dados do IndexedDB</button>
+            <div id="indexeddb-status"></div>
+            <div id="indexeddb-data" class="data-display"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>💾 Teste de localStorage</h3>
+            <button onclick="testLocalStorage()">Testar localStorage</button>
+            <button onclick="addSampleLocalData()">Adicionar Dados Locais</button>
+            <button onclick="loadLocalStorageData()">Carregar Dados do localStorage</button>
+            <div id="localstorage-status"></div>
+            <div id="localstorage-data" class="data-display"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🖼️ Preview da Galeria</h3>
+            <button onclick="renderGalleryPreview()">Renderizar Preview</button>
+            <div id="gallery-preview" class="gallery-preview"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Teste de API</h3>
+            <button onclick="testAPI()">Testar API</button>
+            <div id="api-status"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/api-client.js"></script>
+    <script>
+        // Dados de exemplo
+        const sampleDemolitions = [
+            {
+                title: 'Demolição Residencial - Casa de Madeira',
+                category: 'residential',
+                description: 'Demolição completa de casa residencial de madeira com 2 andares.',
+                location: 'São Paulo, SP',
+                date: '2024-01-15',
+                images: [
+                    {
+                        name: 'casa1.jpg',
+                        data: 'assets/images/DemolicaoMadeira.jpg'
+                    },
+                    {
+                        name: 'casa2.jpg',
+                        data: 'assets/images/DemolicaoRC.jpg'
+                    }
+                ]
+            },
+            {
+                title: 'Demolição Comercial - Galpão Industrial',
+                category: 'commercial',
+                description: 'Demolição de galpão industrial antigo para construção de novo complexo comercial.',
+                location: 'Rio de Janeiro, RJ',
+                date: '2024-02-20',
+                images: [
+                    {
+                        name: 'galpao1.jpg',
+                        data: 'assets/images/DemolicaoFerro.jpg'
+                    }
+                ]
+            }
+        ];
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkSystemStatus();
+        });
+
+        // Verificar status do sistema
+        async function checkSystemStatus() {
+            const statusDiv = document.getElementById('system-status');
+            let status = '<div class="status info">🔍 Verificando sistema...</div>';
+            statusDiv.innerHTML = status;
+
+            const checks = [];
+
+            // Verificar IndexedDB
+            if (window.demolitionDB) {
+                try {
+                    await window.demolitionDB.init();
+                    checks.push('✅ IndexedDB: Disponível');
+                } catch (error) {
+                    checks.push('❌ IndexedDB: Erro - ' + error.message);
+                }
+            } else {
+                checks.push('❌ IndexedDB: Não disponível');
+            }
+
+            // Verificar API
+            if (window.demolitionAPI) {
+                try {
+                    const isOnline = await window.demolitionAPI.isServerOnline();
+                    checks.push(isOnline ? '✅ API: Servidor online' : '⚠️ API: Servidor offline');
+                } catch (error) {
+                    checks.push('❌ API: Erro - ' + error.message);
+                }
+            } else {
+                checks.push('❌ API: Não disponível');
+            }
+
+            // Verificar localStorage
+            try {
+                localStorage.setItem('test', 'ok');
+                localStorage.removeItem('test');
+                checks.push('✅ localStorage: Disponível');
+            } catch (error) {
+                checks.push('❌ localStorage: Erro - ' + error.message);
+            }
+
+            statusDiv.innerHTML = checks.map(check => `<div class="status ${check.includes('✅') ? 'success' : check.includes('❌') ? 'error' : 'info'}">${check}</div>`).join('');
+        }
+
+        // Testar IndexedDB
+        async function testIndexedDB() {
+            const statusDiv = document.getElementById('indexeddb-status');
+            statusDiv.innerHTML = '<div class="status info">🔍 Testando IndexedDB...</div>';
+
+            try {
+                if (!window.demolitionDB) {
+                    throw new Error('IndexedDB não disponível');
+                }
+
+                await window.demolitionDB.init();
+                const demolitions = await window.demolitionDB.getAllDemolitions();
+                
+                statusDiv.innerHTML = `<div class="status success">✅ IndexedDB funcionando! ${demolitions.length} demolições encontradas.</div>`;
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Erro no IndexedDB: ${error.message}</div>`;
+            }
+        }
+
+        // Adicionar dados de exemplo ao IndexedDB
+        async function addSampleData() {
+            const statusDiv = document.getElementById('indexeddb-status');
+            statusDiv.innerHTML = '<div class="status info">📝 Adicionando dados de exemplo...</div>';
+
+            try {
+                if (!window.demolitionDB) {
+                    throw new Error('IndexedDB não disponível');
+                }
+
+                await window.demolitionDB.init();
+                
+                for (const demolition of sampleDemolitions) {
+                    await window.demolitionDB.addDemolition(demolition);
+                }
+                
+                statusDiv.innerHTML = `<div class="status success">✅ ${sampleDemolitions.length} demolições adicionadas com sucesso!</div>`;
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Erro ao adicionar dados: ${error.message}</div>`;
+            }
+        }
+
+        // Carregar dados do IndexedDB
+        async function loadIndexedDBData() {
+            const dataDiv = document.getElementById('indexeddb-data');
+            dataDiv.innerHTML = 'Carregando dados do IndexedDB...';
+
+            try {
+                if (!window.demolitionDB) {
+                    throw new Error('IndexedDB não disponível');
+                }
+
+                const demolitions = await window.demolitionDB.getAllDemolitions();
+                dataDiv.innerHTML = JSON.stringify(demolitions, null, 2);
+            } catch (error) {
+                dataDiv.innerHTML = `Erro: ${error.message}`;
+            }
+        }
+
+        // Testar localStorage
+        async function testLocalStorage() {
+            const statusDiv = document.getElementById('localstorage-status');
+            statusDiv.innerHTML = '<div class="status info">🔍 Testando localStorage...</div>';
+
+            try {
+                localStorage.setItem('test-gallery', JSON.stringify(sampleDemolitions));
+                const data = JSON.parse(localStorage.getItem('test-gallery'));
+                localStorage.removeItem('test-gallery');
+                
+                statusDiv.innerHTML = `<div class="status success">✅ localStorage funcionando! ${data.length} itens salvos.</div>`;
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Erro no localStorage: ${error.message}</div>`;
+            }
+        }
+
+        // Adicionar dados de exemplo ao localStorage
+        async function addSampleLocalData() {
+            const statusDiv = document.getElementById('localstorage-status');
+            statusDiv.innerHTML = '<div class="status info">📝 Adicionando dados locais...</div>';
+
+            try {
+                localStorage.setItem('galleryPhotos', JSON.stringify(sampleDemolitions));
+                statusDiv.innerHTML = `<div class="status success">✅ ${sampleDemolitions.length} demolições salvas no localStorage!</div>`;
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Erro ao salvar dados: ${error.message}</div>`;
+            }
+        }
+
+        // Carregar dados do localStorage
+        async function loadLocalStorageData() {
+            const dataDiv = document.getElementById('localstorage-data');
+            dataDiv.innerHTML = 'Carregando dados do localStorage...';
+
+            try {
+                const data = localStorage.getItem('galleryPhotos');
+                if (data) {
+                    const demolitions = JSON.parse(data);
+                    dataDiv.innerHTML = JSON.stringify(demolitions, null, 2);
+                } else {
+                    dataDiv.innerHTML = 'Nenhum dado encontrado no localStorage';
+                }
+            } catch (error) {
+                dataDiv.innerHTML = `Erro: ${error.message}`;
+            }
+        }
+
+        // Renderizar preview da galeria
+        async function renderGalleryPreview() {
+            const previewDiv = document.getElementById('gallery-preview');
+            previewDiv.innerHTML = 'Carregando preview...';
+
+            try {
+                let demolitions = [];
+
+                // Tentar carregar do IndexedDB primeiro
+                if (window.demolitionDB) {
+                    try {
+                        demolitions = await window.demolitionDB.getAllDemolitions();
+                    } catch (error) {
+                        console.log('Erro ao carregar do IndexedDB:', error);
+                    }
+                }
+
+                // Fallback para localStorage
+                if (demolitions.length === 0) {
+                    const localData = localStorage.getItem('galleryPhotos');
+                    if (localData) {
+                        demolitions = JSON.parse(localData);
+                    }
+                }
+
+                // Fallback para dados de exemplo
+                if (demolitions.length === 0) {
+                    demolitions = sampleDemolitions;
+                }
+
+                if (demolitions.length === 0) {
+                    previewDiv.innerHTML = '<div class="status error">❌ Nenhum dado encontrado</div>';
+                    return;
+                }
+
+                // Renderizar preview
+                const html = demolitions.map(demolition => `
+                    <div class="gallery-item">
+                        <img src="${demolition.images && demolition.images.length > 0 ? demolition.images[0].data : 'assets/images/construction-site-1.jpg'}" 
+                             alt="${demolition.title}"
+                             onerror="this.src='assets/images/construction-site-1.jpg'">
+                        <div class="info">
+                            <h4>${demolition.title}</h4>
+                            <p><strong>Categoria:</strong> ${demolition.category}</p>
+                            <p><strong>Local:</strong> ${demolition.location}</p>
+                            <p><strong>Data:</strong> ${demolition.date}</p>
+                            <p><strong>Imagens:</strong> ${demolition.images ? demolition.images.length : 0}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                previewDiv.innerHTML = html;
+            } catch (error) {
+                previewDiv.innerHTML = `<div class="status error">❌ Erro ao renderizar preview: ${error.message}</div>`;
+            }
+        }
+
+        // Testar API
+        async function testAPI() {
+            const statusDiv = document.getElementById('api-status');
+            statusDiv.innerHTML = '<div class="status info">🔍 Testando API...</div>';
+
+            try {
+                if (!window.demolitionAPI) {
+                    throw new Error('API client não disponível');
+                }
+
+                const isOnline = await window.demolitionAPI.isServerOnline();
+                if (isOnline) {
+                    const stats = await window.demolitionAPI.getStatistics();
+                    statusDiv.innerHTML = `<div class="status success">✅ API funcionando! Estatísticas: ${JSON.stringify(stats)}</div>`;
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">❌ Servidor API offline</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Erro na API: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -25,8 +25,8 @@ class GalleryManager {
         try {
             console.log('Carregando dados da galeria...');
             
-            // Tentar carregar da API centralizada primeiro
-            if (window.demolitionAPI) {
+            // Tentar carregar da API centralizada primeiro (desabilitado temporariamente)
+            if (false && window.demolitionAPI) {
                 try {
                     const response = await window.demolitionAPI.getDemolitions();
                     if (response && response.demolitions && response.demolitions.length > 0) {

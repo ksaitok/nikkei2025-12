@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - NKK Nikkei Kaitai Kogyo</title>
+    <meta name="description" content="Painel administrativo para gerenciar a galeria de demolições">
+    
+    <!-- Preconnect para performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/images/logo/nkk-logo.svg">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="assets/images/logo/nkk-logo.svg" alt="NKK Logo" class="login-logo">
+                <h1>Painel Administrativo</h1>
+                <p>Faça login para acessar o painel</p>
+            </div>
+            
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">Usuário:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </form>
+            
+            <div id="login-error" class="error-message" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Usuário ou senha incorretos!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-panel" style="display: none;">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-header-content">
+                <div class="admin-logo">
+                    <img src="assets/images/logo/nkk-logo.svg" alt="NKK Logo">
+                    <span>Painel Admin</span>
+                </div>
+                <div class="admin-actions">
+                    <a href="galeria-demolicoes.html" class="btn-secondary">
+                        <i class="fas fa-eye"></i> Ver Galeria
+                    </a>
+                    <button id="logout-btn" class="btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-container">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-photos">0</h3>
+                            <p>Total de Fotos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="residential-count">0</h3>
+                            <p>Residencial</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="commercial-count">0</h3>
+                            <p>Comercial</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-industry"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="industrial-count">0</h3>
+                            <p>Industrial</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Photo Form -->
+                <div class="admin-section">
+                    <h2><i class="fas fa-plus-circle"></i> Adicionar Nova Foto</h2>
+                    
+                    <form id="add-photo-form" class="photo-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="photo-title">Título:</label>
+                                <input type="text" id="photo-title" name="title" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="photo-category">Categoria:</label>
+                                <select id="photo-category" name="category" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="residential">Residencial</option>
+                                    <option value="commercial">Comercial</option>
+                                    <option value="industrial">Industrial</option>
+                                    <option value="fire-damage">Pós-Incêndio</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photo-description">Descrição:</label>
+                            <textarea id="photo-description" name="description" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="photo-location">Localização:</label>
+                                <input type="text" id="photo-location" name="location" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="photo-date">Data:</label>
+                                <input type="date" id="photo-date" name="date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="photo-image" data-translate="multiple-photos">Imagens (múltiplas):</label>
+                            <div class="file-upload">
+                                <input type="file" id="photo-image" name="image" accept="image/*" multiple required>
+                                <label for="photo-image" class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span data-translate="upload-multiple">Escolher Imagens (Ctrl+Click para múltiplas)</span>
+                                </label>
+                            </div>
+                            <small class="upload-hint" data-translate="upload-hint">Você pode selecionar múltiplas imagens para a mesma localização</small>
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Adicionar Fotos
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Demolition Management -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-cog"></i> Gerenciar Demolições</h2>
+                        <div class="section-actions">
+                            <button id="add-demolition-btn" class="btn-primary">
+                                <i class="fas fa-plus"></i> Nova Demolição
+                            </button>
+                            <button id="refresh-data-btn" class="btn-secondary">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filters -->
+                    <div class="filters-section">
+                        <div class="filter-group">
+                            <label for="category-filter">Filtrar por Categoria:</label>
+                            <select id="category-filter">
+                                <option value="all">Todas as Categorias</option>
+                                <option value="residential">Residencial</option>
+                                <option value="commercial">Comercial</option>
+                                <option value="industrial">Industrial</option>
+                                <option value="fire-damage">Pós-Incêndio</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="search-input">Buscar:</label>
+                            <input type="text" id="search-input" placeholder="Buscar por título, localização...">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="sort-by">Ordenar por:</label>
+                            <select id="sort-by">
+                                <option value="date-desc">Data (Mais Recente)</option>
+                                <option value="date-asc">Data (Mais Antiga)</option>
+                                <option value="title-asc">Título (A-Z)</option>
+                                <option value="title-desc">Título (Z-A)</option>
+                                <option value="location-asc">Localização (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Demolitions Grid -->
+                    <div class="demolitions-grid" id="demolitions-grid">
+                        <!-- Demolições serão carregadas dinamicamente -->
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination">
+                        <!-- Paginação será gerada dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/admin.js"></script>
+</body>
+</html>

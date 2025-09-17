@@ -247,22 +247,19 @@ class AdminManager {
         const searchInput = document.getElementById('search-input')?.value || '';
         const sortBy = document.getElementById('sort-by')?.value || 'date-desc';
         
-        // Agrupar por título primeiro
-        const groupedDemolitions = this.groupDemolitionsByTitle();
-        
         // Filtrar por categoria
-        let filtered = groupedDemolitions;
+        let filtered = this.photos;
         if (categoryFilter !== 'all') {
-            filtered = filtered.filter(group => group.category === categoryFilter);
+            filtered = filtered.filter(photo => photo.category === categoryFilter);
         }
         
         // Filtrar por busca
         if (searchInput) {
             const searchLower = searchInput.toLowerCase();
-            filtered = filtered.filter(group => 
-                group.title.toLowerCase().includes(searchLower) ||
-                group.location.toLowerCase().includes(searchLower) ||
-                group.description.toLowerCase().includes(searchLower)
+            filtered = filtered.filter(photo => 
+                photo.title.toLowerCase().includes(searchLower) ||
+                photo.location.toLowerCase().includes(searchLower) ||
+                photo.description.toLowerCase().includes(searchLower)
             );
         }
         
@@ -289,33 +286,6 @@ class AdminManager {
         this.renderPagination();
     }
     
-    // Agrupar demolições por título
-    groupDemolitionsByTitle() {
-        const groups = {};
-        
-        this.photos.forEach(photo => {
-            const titleKey = photo.title;
-            
-            if (!groups[titleKey]) {
-                groups[titleKey] = {
-                    title: photo.title,
-                    description: photo.description,
-                    category: photo.category,
-                    location: photo.location,
-                    date: photo.date,
-                    photos: [],
-                    totalPhotos: 0,
-                    demolitionGroup: photo.demolitionGroup
-                };
-            }
-            
-            groups[titleKey].photos.push(photo);
-            groups[titleKey].totalPhotos = groups[titleKey].photos.length;
-        });
-        
-        return Object.values(groups);
-    }
-    
     // Renderizar grid de demolições
     renderDemolitionsGrid() {
         const demolitionsGrid = document.getElementById('demolitions-grid');
@@ -334,44 +304,40 @@ class AdminManager {
     }
     
     // Criar card de demolição
-    createDemolitionCard(demolitionGroup) {
+    createDemolitionCard(photo) {
         const card = document.createElement('div');
         card.className = 'demolition-card';
         
-        // Usar a primeira foto como imagem principal
-        const firstPhoto = demolitionGroup.photos[0];
-        
         card.innerHTML = `
             <div class="demolition-image">
-                <img src="${firstPhoto.image}" alt="${demolitionGroup.title}" loading="lazy">
-                <div class="demolition-badge">${this.getCategoryName(demolitionGroup.category)}</div>
-                <div class="photo-count-badge">${demolitionGroup.totalPhotos} foto(s)</div>
+                <img src="${photo.image}" alt="${photo.title}" loading="lazy">
+                <div class="demolition-badge">${this.getCategoryName(photo.category)}</div>
             </div>
             <div class="demolition-content">
-                <h3 class="demolition-title">${demolitionGroup.title}</h3>
-                <p class="demolition-description">${demolitionGroup.description}</p>
+                <h3 class="demolition-title">${photo.title}</h3>
+                <p class="demolition-description">${photo.description}</p>
                 <div class="demolition-meta">
                     <div class="meta-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>${demolitionGroup.location}</span>
+                        <span>${photo.location}</span>
                     </div>
                     <div class="meta-item">
                         <i class="fas fa-calendar"></i>
-                        <span>${this.formatDate(demolitionGroup.date)}</span>
+                        <span>${this.formatDate(photo.date)}</span>
                     </div>
                     <div class="meta-item">
-                        <i class="fas fa-tag"></i>
-                        <span>${this.getCategoryName(demolitionGroup.category)}</span>
+                        <i class="fas fa-images"></i>
+                        <span>${photo.totalPhotos || 1} foto(s)</span>
                     </div>
                 </div>
                 <div class="demolition-actions">
-                    <button class="btn-view" onclick="adminManager.viewDemolitionGroup('${demolitionGroup.title}')">
-                        <i class="fas fa-eye"></i> Ver Fotos
+                    <button class="btn-view" onclick="adminManager.viewPhoto(${photo.id})">
+                        <i class="fas fa-eye"></i> Ver
                     </button>
-                    <button class="btn-edit" onclick="adminManager.editDemolitionGroup('${demolitionGroup.title}')">
+                    <button class="btn-edit" onclick="adminManager.editPhoto(${photo.id})">
                         <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button class="btn-delete" onclick="adminManager.deleteDemolitionGroup('${demolitionGroup.title}')">
+                    <button class="btn-delete" onclick="adminManager.deletePhoto(${photo.id})">
                         <i class="fas fa-trash"></i> Excluir
                     </button>
                 </div>
@@ -459,185 +425,6 @@ class AdminManager {
         if (photo) {
             // Abrir em nova aba
             window.open(photo.image, '_blank');
-        }
-    }
-    
-    // Ver grupo de demolição
-    viewDemolitionGroup(title) {
-        const group = this.groupDemolitionsByTitle().find(g => g.title === title);
-        if (group) {
-            // Criar modal para mostrar todas as fotos do grupo
-            this.showDemolitionGroupModal(group);
-        }
-    }
-    
-    // Mostrar modal do grupo de demolição
-    showDemolitionGroupModal(group) {
-        // Criar modal
-        const modal = document.createElement('div');
-        modal.className = 'demolition-modal';
-        modal.innerHTML = `
-            <div class="modal-overlay" onclick="this.parentElement.remove()"></div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>${group.title}</h2>
-                    <button class="modal-close" onclick="this.closest('.demolition-modal').remove()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="demolition-info">
-                        <div class="info-item">
-                            <strong>Categoria:</strong> ${this.getCategoryName(group.category)}
-                        </div>
-                        <div class="info-item">
-                            <strong>Localização:</strong> ${group.location}
-                        </div>
-                        <div class="info-item">
-                            <strong>Data:</strong> ${this.formatDate(group.date)}
-                        </div>
-                        <div class="info-item">
-                            <strong>Descrição:</strong> ${group.description}
-                        </div>
-                    </div>
-                    <div class="photos-grid">
-                        ${group.photos.map((photo, index) => `
-                            <div class="photo-item" onclick="window.open('${photo.image}', '_blank')">
-                                <img src="${photo.image}" alt="Foto ${index + 1}">
-                                <div class="photo-overlay">
-                                    <span>Foto ${index + 1}</span>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-    }
-    
-    // Editar grupo de demolição
-    editDemolitionGroup(title) {
-        const group = this.groupDemolitionsByTitle().find(g => g.title === title);
-        if (group) {
-            // Preencher formulário com dados do grupo
-            document.getElementById('photo-title').value = group.title;
-            document.getElementById('photo-category').value = group.category;
-            document.getElementById('photo-description').value = group.description;
-            document.getElementById('photo-location').value = group.location;
-            document.getElementById('photo-date').value = group.date;
-            
-            // Mostrar preview das imagens atuais
-            const preview = document.getElementById('image-preview');
-            preview.innerHTML = group.photos.map((photo, index) => `
-                <div class="image-preview-item">
-                    <img src="${photo.image}" alt="Preview ${index + 1}">
-                    <div class="image-info">
-                        <span>Foto ${index + 1}</span>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Scroll para o formulário
-            document.getElementById('add-photo-form').scrollIntoView({ behavior: 'smooth' });
-            
-            // Alterar botão para "Atualizar"
-            const submitBtn = document.querySelector('#add-photo-form button[type="submit"]');
-            submitBtn.innerHTML = '<i class="fas fa-save"></i> Atualizar Demolição';
-            submitBtn.onclick = (e) => {
-                e.preventDefault();
-                this.updateDemolitionGroup(title);
-            };
-        }
-    }
-    
-    // Atualizar grupo de demolição
-    updateDemolitionGroup(oldTitle) {
-        const form = document.getElementById('add-photo-form');
-        const formData = new FormData(form);
-        
-        const newTitle = formData.get('title');
-        const category = formData.get('category');
-        const description = formData.get('description');
-        const location = formData.get('location');
-        const date = formData.get('date');
-        const images = formData.getAll('image');
-        
-        // Verificar se o novo título já existe (se mudou)
-        if (newTitle !== oldTitle) {
-            const existingDemolition = this.photos.find(photo => 
-                photo.title.toLowerCase().trim() === newTitle.toLowerCase().trim()
-            );
-            
-            if (existingDemolition) {
-                this.showMessage(`Erro: Já existe uma demolição com o título "${newTitle}". Por favor, escolha um título diferente.`, 'error');
-                return;
-            }
-        }
-        
-        // Remover fotos antigas do grupo
-        this.photos = this.photos.filter(photo => photo.title !== oldTitle);
-        
-        // Adicionar novas fotos (se houver) ou manter as existentes
-        if (images.length > 0 && images[0].size > 0) {
-            // Usar novas imagens
-            const baseId = Date.now();
-            const newPhotos = images.map((image, index) => ({
-                id: baseId + index,
-                title: newTitle,
-                description: description,
-                category: category,
-                date: date,
-                location: location,
-                image: URL.createObjectURL(image),
-                demolitionGroup: `${newTitle}_${baseId}`,
-                photoIndex: index + 1,
-                totalPhotos: images.length,
-                details: description
-            }));
-            
-            this.photos.unshift(...newPhotos);
-        } else {
-            // Manter imagens existentes, apenas atualizar dados
-            const existingPhotos = this.photos.filter(photo => photo.title === oldTitle);
-            existingPhotos.forEach(photo => {
-                photo.title = newTitle;
-                photo.description = description;
-                photo.category = category;
-                photo.date = date;
-                photo.location = location;
-            });
-        }
-        
-        // Salvar no localStorage
-        this.savePhotos();
-        
-        // Atualizar interface
-        this.renderPhotos();
-        this.updateStats();
-        
-        // Limpar formulário
-        form.reset();
-        document.getElementById('image-preview').innerHTML = '';
-        
-        // Restaurar botão original
-        const submitBtn = document.querySelector('#add-photo-form button[type="submit"]');
-        submitBtn.innerHTML = '<i class="fas fa-save"></i> Adicionar Fotos';
-        submitBtn.onclick = null;
-        
-        // Mostrar mensagem de sucesso
-        this.showMessage('Demolição atualizada com sucesso!', 'success');
-    }
-    
-    // Excluir grupo de demolição
-    deleteDemolitionGroup(title) {
-        if (confirm(`Tem certeza que deseja excluir a demolição "${title}" e todas as suas fotos?`)) {
-            this.photos = this.photos.filter(photo => photo.title !== title);
-            this.savePhotos();
-            this.renderPhotos();
-            this.updateStats();
-            this.showMessage('Demolição excluída com sucesso!', 'success');
         }
     }
     

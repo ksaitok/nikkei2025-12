@@ -438,7 +438,7 @@ class GalleryManager {
         console.log('Criando item da galeria:', photo.title, 'Imagem:', photo.image);
         return `
             <div class="gallery-item" data-photo-id="${photo.id}" style="animation-delay: ${index * 0.05}s">
-                <img src="${photo.image}" alt="Foto ${photo.photoIndex || index + 1}" loading="lazy" 
+                <img src="${photo.image}" alt="Foto ${photo.photoIndex || index + 1}" 
                      onerror="console.log('Erro ao carregar imagem:', '${photo.image}'); this.src='assets/images/construction-site-1.jpg'; this.alt='Imagem não encontrada';"
                      onload="console.log('Imagem carregada com sucesso:', '${photo.image}')">
                 <div class="gallery-overlay">

@@ -373,7 +373,7 @@ class AdminManager {
         
         card.innerHTML = `
             <div class="demolition-image">
-                <img src="${firstPhoto.image}" alt="${demolitionGroup.title}" loading="lazy">
+                <img src="${firstPhoto.image}" alt="${demolitionGroup.title}">
                 <div class="demolition-badge">${this.getCategoryName(demolitionGroup.category)}</div>
                 <div class="photo-count-badge">${demolitionGroup.totalPhotos} foto(s)</div>
             </div>

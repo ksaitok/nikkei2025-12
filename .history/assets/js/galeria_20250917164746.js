@@ -264,24 +264,6 @@ class GalleryManager {
         // Limpar grid
         galleryGrid.innerHTML = '';
         
-        // Adicionar mensagem de debug temporária
-        const debugMsg = document.createElement('div');
-        debugMsg.style.cssText = `
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 20px;
-            background: rgba(52, 152, 219, 0.1);
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            color: #2c3e50;
-            font-weight: 600;
-        `;
-        debugMsg.innerHTML = `
-            <i class="fas fa-info-circle"></i>
-            Debug: Carregando galeria... (${this.filteredItems.length} itens encontrados)
-        `;
-        galleryGrid.appendChild(debugMsg);
-        
         // Calcular itens para mostrar
         const itemsToShow = this.currentPage * this.itemsPerPage;
         const itemsToRender = this.filteredItems.slice(0, itemsToShow);

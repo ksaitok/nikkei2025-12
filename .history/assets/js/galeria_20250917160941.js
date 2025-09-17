@@ -264,24 +264,6 @@ class GalleryManager {
         // Limpar grid
         galleryGrid.innerHTML = '';
         
-        // Adicionar mensagem de debug temporária
-        const debugMsg = document.createElement('div');
-        debugMsg.style.cssText = `
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 20px;
-            background: rgba(52, 152, 219, 0.1);
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            color: #2c3e50;
-            font-weight: 600;
-        `;
-        debugMsg.innerHTML = `
-            <i class="fas fa-info-circle"></i>
-            Debug: Carregando galeria... (${this.filteredItems.length} itens encontrados)
-        `;
-        galleryGrid.appendChild(debugMsg);
-        
         // Calcular itens para mostrar
         const itemsToShow = this.currentPage * this.itemsPerPage;
         const itemsToRender = this.filteredItems.slice(0, itemsToShow);
@@ -605,26 +587,7 @@ class GalleryManager {
 
 // Inicializar galeria quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM carregado, inicializando galeria...');
-    try {
-        const galleryManager = new GalleryManager();
-        console.log('Galeria inicializada com sucesso:', galleryManager);
-    } catch (error) {
-        console.error('Erro ao inicializar galeria:', error);
-    }
+    new GalleryManager();
 });
-
-// Fallback para caso o DOM já esteja carregado
-if (document.readyState === 'loading') {
-    console.log('DOM ainda carregando...');
-} else {
-    console.log('DOM já carregado, inicializando galeria imediatamente...');
-    try {
-        const galleryManager = new GalleryManager();
-        console.log('Galeria inicializada com sucesso (fallback):', galleryManager);
-    } catch (error) {
-        console.error('Erro ao inicializar galeria (fallback):', error);
-    }
-}
 
 // As traduções da galeria já estão incluídas no arquivo language-simple.js

@@ -173,7 +173,9 @@ class GalleryManager {
                 ];
                 
                 // Salvar dados padrão no localStorage
+                console.log('Salvando dados padrão no localStorage:', this.allItems.length, 'itens');
                 localStorage.setItem('galleryPhotos', JSON.stringify(this.allItems));
+                console.log('Dados padrão salvos com sucesso');
             }
             
             this.filteredItems = [...this.allItems];
@@ -433,11 +435,12 @@ class GalleryManager {
     
     // Criar HTML do item da galeria
     createGalleryItemHTML(photo, index) {
+        console.log('Criando item da galeria:', photo.title, 'Imagem:', photo.image);
         return `
             <div class="gallery-item" data-photo-id="${photo.id}" style="animation-delay: ${index * 0.05}s">
                 <img src="${photo.image}" alt="Foto ${photo.photoIndex || index + 1}" loading="lazy" 
-                     onerror="this.src='assets/images/construction-site-1.jpg'; this.alt='Imagem não encontrada';"
-                     onload="console.log('Imagem carregada:', '${photo.image}')">
+                     onerror="console.log('Erro ao carregar imagem:', '${photo.image}'); this.src='assets/images/construction-site-1.jpg'; this.alt='Imagem não encontrada';"
+                     onload="console.log('Imagem carregada com sucesso:', '${photo.image}')">
                 <div class="gallery-overlay">
                     <span class="photo-index">Foto ${photo.photoIndex || index + 1} de ${photo.totalPhotos || 1}</span>
                 </div>

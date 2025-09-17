@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Completo - Problema das Imagens</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .diagnostic-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        .section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .test-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+        }
+        .test-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-container">
+        <h1>🔍 Diagnóstico Completo - Problema das Imagens</h1>
+        <p>Esta página executa uma bateria completa de testes para identificar por que as imagens não aparecem na galeria e no admin.</p>
+        
+        <!-- Teste 1: Acesso às Imagens -->
+        <div class="section">
+            <h2>1. Teste de Acesso às Imagens</h2>
+            <div id="image-access-status"></div>
+            <div class="test-grid" id="image-access-grid"></div>
+        </div>
+        
+        <!-- Teste 2: localStorage -->
+        <div class="section">
+            <h2>2. Teste do localStorage</h2>
+            <div id="localstorage-status"></div>
+            <div id="localstorage-data"></div>
+        </div>
+        
+        <!-- Teste 3: JavaScript da Galeria -->
+        <div class="section">
+            <h2>3. Teste do JavaScript da Galeria</h2>
+            <div id="gallery-js-status"></div>
+            <div id="gallery-js-test"></div>
+        </div>
+        
+        <!-- Teste 4: JavaScript do Admin -->
+        <div class="section">
+            <h2>4. Teste do JavaScript do Admin</h2>
+            <div id="admin-js-status"></div>
+            <div id="admin-js-test"></div>
+        </div>
+        
+        <!-- Logs -->
+        <div class="section">
+            <h2>5. Logs de Debug</h2>
+            <div class="log" id="debug-logs"></div>
+        </div>
+    </div>
+
+    <script>
+        const images = [
+            'assets/images/DemolicaoMadeira.jpg',
+            'assets/images/DemolicaoRC.jpg',
+            'assets/images/DemolicaoFerro.jpg',
+            'assets/images/DemolicaoPosIncendio.jpg',
+            'assets/images/DemolicaoNaiso.jpg',
+            'assets/images/CorteArvore.jpg',
+            'assets/images/EquipPesado.png',
+            'assets/images/DemolicaoApos.png'
+        ];
+
+        let logs = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.push(`[${timestamp}] ${message}`);
+            updateLogs();
+            console.log(message);
+        }
+        
+        function updateLogs() {
+            document.getElementById('debug-logs').innerHTML = logs.join('\n');
+        }
+        
+        function updateStatus(elementId, message, type = 'info') {
+            document.getElementById(elementId).innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        // Teste 1: Acesso às Imagens
+        async function testImageAccess() {
+            log('Iniciando teste de acesso às imagens...');
+            updateStatus('image-access-status', '⏳ Testando acesso às imagens...', 'warning');
+            
+            const grid = document.getElementById('image-access-grid');
+            let loadedCount = 0;
+            let errorCount = 0;
+            
+            for (let i = 0; i < images.length; i++) {
+                const imagePath = images[i];
+                const testItem = document.createElement('div');
+                testItem.className = 'test-item';
+                testItem.innerHTML = `
+                    <div style="height: 100px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div style="margin-top: 5px; font-size: 0.8rem;">${imagePath.split('/').pop()}</div>
+                `;
+                grid.appendChild(testItem);
+                
+                const img = new Image();
+                img.onload = function() {
+                    loadedCount++;
+                    testItem.innerHTML = `
+                        <img src="${imagePath}" alt="Teste">
+                        <div style="margin-top: 5px; font-size: 0.8rem; color: #28a745;">✅ OK</div>
+                    `;
+                    testItem.style.borderColor = '#28a745';
+                    log(`✅ Imagem acessível: ${imagePath}`);
+                    updateStatus('image-access-status', `✅ ${loadedCount} carregadas, ${errorCount} com erro`, loadedCount === images.length ? 'success' : 'warning');
+                };
+                
+                img.onerror = function() {
+                    errorCount++;
+                    testItem.innerHTML = `
+                        <div style="height: 100px; background: #f8d7da; display: flex; align-items: center; justify-content: center; color: #721c24;">
+                            ❌ Erro
+                        </div>
+                        <div style="margin-top: 5px; font-size: 0.8rem; color: #dc3545;">❌ Erro</div>
+                    `;
+                    testItem.style.borderColor = '#dc3545';
+                    log(`❌ Erro de acesso: ${imagePath}`);
+                    updateStatus('image-access-status', `❌ ${loadedCount} carregadas, ${errorCount} com erro`, 'error');
+                };
+                
+                img.src = imagePath;
+            }
+        }
+        
+        // Teste 2: localStorage
+        function testLocalStorage() {
+            log('Testando localStorage...');
+            updateStatus('localstorage-status', '⏳ Testando localStorage...', 'warning');
+            
+            try {
+                // Testar se localStorage funciona
+                const testKey = 'test_key';
+                const testValue = 'test_value';
+                localStorage.setItem(testKey, testValue);
+                const retrieved = localStorage.getItem(testKey);
+                localStorage.removeItem(testKey);
+                
+                if (retrieved === testValue) {
+                    log('✅ localStorage funcionando corretamente');
+                    updateStatus('localstorage-status', '✅ localStorage funcionando', 'success');
+                } else {
+                    log('❌ localStorage não está funcionando corretamente');
+                    updateStatus('localstorage-status', '❌ localStorage com problemas', 'error');
+                }
+                
+                // Verificar dados da galeria
+                const galleryData = localStorage.getItem('galleryPhotos');
+                if (galleryData) {
+                    try {
+                        const parsed = JSON.parse(galleryData);
+                        log(`✅ Dados da galeria encontrados: ${parsed.length} itens`);
+                        document.getElementById('localstorage-data').innerHTML = `
+                            <div class="status success">
+                                <strong>Dados da galeria:</strong> ${parsed.length} itens encontrados<br>
+                                <strong>Primeiro item:</strong> ${parsed[0]?.title || 'N/A'}
+                            </div>
+                        `;
+                    } catch (e) {
+                        log('❌ Erro ao parsear dados da galeria: ' + e.message);
+                        updateStatus('localstorage-status', '❌ Dados da galeria corrompidos', 'error');
+                    }
+                } else {
+                    log('⚠️ Nenhum dado da galeria encontrado no localStorage');
+                    document.getElementById('localstorage-data').innerHTML = `
+                        <div class="status warning">
+                            <strong>Nenhum dado da galeria encontrado no localStorage</strong>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                log('❌ Erro no localStorage: ' + error.message);
+                updateStatus('localstorage-status', '❌ localStorage com erro: ' + error.message, 'error');
+            }
+        }
+        
+        // Teste 3: JavaScript da Galeria
+        function testGalleryJS() {
+            log('Testando JavaScript da galeria...');
+            updateStatus('gallery-js-status', '⏳ Testando JavaScript da galeria...', 'warning');
+            
+            try {
+                // Verificar se a classe GalleryManager existe
+                if (typeof GalleryManager !== 'undefined') {
+                    log('✅ Classe GalleryManager encontrada');
+                    updateStatus('gallery-js-status', '✅ JavaScript da galeria carregado', 'success');
+                    document.getElementById('gallery-js-test').innerHTML = `
+                        <div class="status success">
+                            <strong>GalleryManager:</strong> Classe encontrada e disponível
+                        </div>
+                    `;
+                } else {
+                    log('❌ Classe GalleryManager não encontrada');
+                    updateStatus('gallery-js-status', '❌ JavaScript da galeria não carregado', 'error');
+                    document.getElementById('gallery-js-test').innerHTML = `
+                        <div class="status error">
+                            <strong>GalleryManager:</strong> Classe não encontrada
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                log('❌ Erro ao testar JavaScript da galeria: ' + error.message);
+                updateStatus('gallery-js-status', '❌ Erro: ' + error.message, 'error');
+            }
+        }
+        
+        // Teste 4: JavaScript do Admin
+        function testAdminJS() {
+            log('Testando JavaScript do admin...');
+            updateStatus('admin-js-status', '⏳ Testando JavaScript do admin...', 'warning');
+            
+            try {
+                // Verificar se a classe AdminManager existe
+                if (typeof AdminManager !== 'undefined') {
+                    log('✅ Classe AdminManager encontrada');
+                    updateStatus('admin-js-status', '✅ JavaScript do admin carregado', 'success');
+                    document.getElementById('admin-js-test').innerHTML = `
+                        <div class="status success">
+                            <strong>AdminManager:</strong> Classe encontrada e disponível
+                        </div>
+                    `;
+                } else {
+                    log('❌ Classe AdminManager não encontrada');
+                    updateStatus('admin-js-status', '❌ JavaScript do admin não carregado', 'error');
+                    document.getElementById('admin-js-test').innerHTML = `
+                        <div class="status error">
+                            <strong>AdminManager:</strong> Classe não encontrada
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                log('❌ Erro ao testar JavaScript do admin: ' + error.message);
+                updateStatus('admin-js-status', '❌ Erro: ' + error.message, 'error');
+            }
+        }
+        
+        // Executar todos os testes
+        async function runAllTests() {
+            log('=== INICIANDO DIAGNÓSTICO COMPLETO ===');
+            
+            await testImageAccess();
+            testLocalStorage();
+            testGalleryJS();
+            testAdminJS();
+            
+            log('=== DIAGNÓSTICO CONCLUÍDO ===');
+        }
+        
+        // Inicializar quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', () => {
+            log('DOM carregado, iniciando diagnóstico...');
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>

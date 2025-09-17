@@ -23,11 +23,14 @@ class GalleryManager {
     // Carregar dados da galeria
     async loadGalleryData() {
         try {
+            console.log('Carregando dados da galeria...');
             // Carregar dados do localStorage ou usar dados padrão
             const savedPhotos = localStorage.getItem('galleryPhotos');
             if (savedPhotos) {
                 this.allItems = JSON.parse(savedPhotos);
+                console.log('Dados carregados do localStorage:', this.allItems.length, 'itens');
             } else {
+                console.log('Nenhum dado encontrado no localStorage, usando dados padrão');
                 // Dados padrão - Agrupados por título da demolição
                 this.allItems = [
                 // Demolição 1: Casa Residencial em São Paulo - Múltiplas fotos
@@ -176,6 +179,7 @@ class GalleryManager {
             this.filteredItems = [...this.allItems];
             console.log('Dados carregados:', this.allItems);
             console.log('Número de itens:', this.allItems.length);
+            console.log('Itens filtrados:', this.filteredItems.length);
             this.renderGallery();
             
         } catch (error) {
@@ -260,6 +264,8 @@ class GalleryManager {
         }
         
         console.log('Iniciando renderização da galeria...');
+        console.log('Itens filtrados:', this.filteredItems.length);
+        console.log('Todos os itens:', this.allItems.length);
         
         // Limpar grid
         galleryGrid.innerHTML = '';

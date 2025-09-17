@@ -254,12 +254,7 @@ class GalleryManager {
     // Renderizar galeria
     renderGallery() {
         const galleryGrid = document.getElementById('gallery-grid');
-        if (!galleryGrid) {
-            console.error('Elemento gallery-grid não encontrado!');
-            return;
-        }
-        
-        console.log('Iniciando renderização da galeria...');
+        if (!galleryGrid) return;
         
         // Limpar grid
         galleryGrid.innerHTML = '';
@@ -267,20 +262,6 @@ class GalleryManager {
         // Calcular itens para mostrar
         const itemsToShow = this.currentPage * this.itemsPerPage;
         const itemsToRender = this.filteredItems.slice(0, itemsToShow);
-        
-        console.log('Itens para renderizar:', itemsToRender.length);
-        
-        // Se não há itens, mostrar mensagem
-        if (itemsToRender.length === 0) {
-            galleryGrid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #7f8c8d;">
-                    <i class="fas fa-images" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                    <h3>Nenhuma foto encontrada</h3>
-                    <p>Tente alterar os filtros ou adicionar novas fotos.</p>
-                </div>
-            `;
-            return;
-        }
         
         // Agrupar fotos por localização
         const groupedItems = this.groupPhotosByLocation(itemsToRender);

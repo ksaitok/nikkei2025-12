@@ -28,9 +28,9 @@ class GalleryManager {
             if (savedPhotos) {
                 this.allItems = JSON.parse(savedPhotos);
             } else {
-                // Dados padrão - Agrupados por título da demolição
+                // Dados padrão
                 this.allItems = [
-                // Demolição 1: Casa Residencial em São Paulo - Múltiplas fotos
+                // Localização 1: São Paulo, SP - Múltiplas fotos
                 {
                     id: 1,
                     title: 'Demolição Residencial - Casa de Madeira',
@@ -46,7 +46,7 @@ class GalleryManager {
                 },
                 {
                     id: 2,
-                    title: 'Demolição Residencial - Casa de Madeira',
+                    title: 'Processo de Demolição - São Paulo',
                     description: 'Equipamentos em ação durante a demolição da estrutura de madeira.',
                     image: 'assets/images/DemolicaoRC.jpg',
                     category: 'residential',
@@ -59,7 +59,7 @@ class GalleryManager {
                 },
                 {
                     id: 3,
-                    title: 'Demolição Residencial - Casa de Madeira',
+                    title: 'Finalização - São Paulo',
                     description: 'Local limpo após demolição completa e remoção de entulhos.',
                     image: 'assets/images/DemolicaoFerro.jpg',
                     category: 'residential',
@@ -71,7 +71,7 @@ class GalleryManager {
                     details: 'Terreno limpo e pronto para nova construção'
                 },
                 
-                // Demolição 2: Edifício Comercial no Rio de Janeiro - Múltiplas fotos
+                // Localização 2: Rio de Janeiro, RJ - Múltiplas fotos
                 {
                     id: 4,
                     title: 'Demolição Comercial - Edifício de Concreto',
@@ -87,7 +87,7 @@ class GalleryManager {
                 },
                 {
                     id: 5,
-                    title: 'Demolição Comercial - Edifício de Concreto',
+                    title: 'Estrutura de Concreto - Rio de Janeiro',
                     description: 'Demolição de estrutura de concreto com equipamentos pesados.',
                     image: 'assets/images/DemolicaoNaiso.jpg',
                     category: 'commercial',
@@ -100,7 +100,7 @@ class GalleryManager {
                 },
                 {
                     id: 6,
-                    title: 'Demolição Comercial - Edifício de Concreto',
+                    title: 'Remoção de Entulhos - Rio de Janeiro',
                     description: 'Corte de árvores como preparação para demolição de terreno.',
                     image: 'assets/images/CorteArvore.jpg',
                     category: 'commercial',
@@ -113,7 +113,7 @@ class GalleryManager {
                 },
                 {
                     id: 7,
-                    title: 'Demolição Comercial - Edifício de Concreto',
+                    title: 'Finalização - Rio de Janeiro',
                     description: 'Equipamentos pesados sendo utilizados em demolição industrial.',
                     image: 'assets/images/EquipPesado.png',
                     category: 'commercial',
@@ -125,7 +125,7 @@ class GalleryManager {
                     details: 'Local limpo e preparado para nova construção'
                 },
                 
-                // Demolição 3: Galpão Industrial em Belo Horizonte - Múltiplas fotos
+                // Localização 3: Belo Horizonte, MG - Múltiplas fotos
                 {
                     id: 8,
                     title: 'Demolição Industrial - Galpão Metálico',
@@ -141,7 +141,7 @@ class GalleryManager {
                 },
                 {
                     id: 9,
-                    title: 'Demolição Industrial - Galpão Metálico',
+                    title: 'Desmontagem Metálica - Belo Horizonte',
                     description: 'Demolição de estrutura danificada após desastre natural.',
                     image: 'assets/images/DemolicaoMadeira.jpg',
                     category: 'industrial',
@@ -153,7 +153,7 @@ class GalleryManager {
                     details: 'Separação de materiais metálicos para reciclagem'
                 },
                 
-                // Demolição 4: Residência Pós-Incêndio em Curitiba - Foto única
+                // Localização 4: Curitiba, PR - Foto única
                 {
                     id: 10,
                     title: 'Demolição Pós-Incêndio - Residência',

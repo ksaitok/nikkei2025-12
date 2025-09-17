@@ -25,7 +25,23 @@ class GalleryManager {
         try {
             console.log('Carregando dados da galeria...');
             
-            // Tentar carregar do banco de dados primeiro
+            // Tentar carregar da API centralizada primeiro
+            if (window.demolitionAPI) {
+                try {
+                    const response = await window.demolitionAPI.getDemolitions();
+                    if (response && response.demolitions && response.demolitions.length > 0) {
+                        // Converter dados da API para formato da galeria
+                        this.allItems = window.demolitionAPI.convertMultipleToGalleryFormat(response.demolitions);
+                        console.log('Dados carregados da API:', this.allItems.length, 'itens');
+                        this.renderGallery();
+                        return;
+                    }
+                } catch (error) {
+                    console.log('Erro ao carregar da API, tentando fallback:', error);
+                }
+            }
+            
+            // Fallback para IndexedDB
             if (window.demolitionDB) {
                 try {
                     const demolitions = await window.demolitionDB.getAllDemolitions();
@@ -45,12 +61,12 @@ class GalleryManager {
                             details: demolition.description,
                             images: demolition.images || []
                         }));
-                        console.log('Dados carregados do banco de dados:', this.allItems.length, 'itens');
+                        console.log('Dados carregados do IndexedDB:', this.allItems.length, 'itens');
                         this.renderGallery();
                         return;
                     }
                 } catch (error) {
-                    console.log('Erro ao carregar do banco de dados, usando localStorage:', error);
+                    console.log('Erro ao carregar do IndexedDB, usando localStorage:', error);
                 }
             }
             

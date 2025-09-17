@@ -404,6 +404,7 @@
     </main>
 
     <!-- Scripts -->
+    <script src="assets/js/api-client.js"></script>
     <script src="assets/js/database.js"></script>
     <script src="assets/js/language-simple.js"></script>
     <script>
@@ -420,27 +421,56 @@
         // Carregar estatísticas
         async function loadStatistics() {
             try {
-                const stats = await window.demolitionDB.getStatistics();
-                const statsGrid = document.getElementById('stats-grid');
+                let stats;
                 
-                statsGrid.innerHTML = `
-                    <div class="stat-card">
-                        <h3>Total de Demolições</h3>
-                        <div class="stat-number">${stats.total}</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Últimos 30 dias</h3>
-                        <div class="stat-number">${stats.recent}</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Por Categoria</h3>
-                        <div class="stat-number">${Object.keys(stats.byCategory).length}</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Localizações</h3>
-                        <div class="stat-number">${Object.keys(stats.byLocation).length}</div>
-                    </div>
-                `;
+                // Tentar carregar da API primeiro
+                if (window.demolitionAPI) {
+                    try {
+                        stats = await window.demolitionAPI.getStatistics();
+                        stats = {
+                            total: stats.total_demolitions || 0,
+                            recent: 0, // TODO: implementar cálculo de últimos 30 dias
+                            byCategory: {
+                                residential: stats.residential_count || 0,
+                                commercial: stats.commercial_count || 0,
+                                industrial: stats.industrial_count || 0,
+                                'fire-damage': stats.fire_damage_count || 0
+                            },
+                            byLocation: {} // TODO: implementar contagem por localização
+                        };
+                    } catch (error) {
+                        console.log('Erro ao carregar da API, usando fallback:', error);
+                        // Fallback para IndexedDB
+                        if (window.demolitionDB) {
+                            stats = await window.demolitionDB.getStatistics();
+                        }
+                    }
+                } else if (window.demolitionDB) {
+                    stats = await window.demolitionDB.getStatistics();
+                }
+                
+                if (stats) {
+                    const statsGrid = document.getElementById('stats-grid');
+                    
+                    statsGrid.innerHTML = `
+                        <div class="stat-card">
+                            <h3>Total de Demolições</h3>
+                            <div class="stat-number">${stats.total}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Últimos 30 dias</h3>
+                            <div class="stat-number">${stats.recent}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Por Categoria</h3>
+                            <div class="stat-number">${Object.keys(stats.byCategory).length}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Localizações</h3>
+                            <div class="stat-number">${Object.keys(stats.byLocation).length}</div>
+                        </div>
+                    `;
+                }
             } catch (error) {
                 console.error('Erro ao carregar estatísticas:', error);
             }
@@ -564,12 +594,29 @@
                     images: selectedImages.map(img => ({
                         name: img.name,
                         size: img.size,
+                        file: img.file,
                         data: img.data
                     }))
                 };
 
-                // Salvar no banco de dados
-                const demolitionId = await window.demolitionDB.addDemolition(demolitionData);
+                let demolitionId;
+                
+                // Tentar salvar na API primeiro
+                if (window.demolitionAPI) {
+                    try {
+                        const result = await window.demolitionAPI.createDemolition(demolitionData);
+                        demolitionId = result.id;
+                        console.log('Demolição salva na API:', demolitionId);
+                    } catch (error) {
+                        console.log('Erro ao salvar na API, usando fallback:', error);
+                        // Fallback para IndexedDB
+                        if (window.demolitionDB) {
+                            demolitionId = await window.demolitionDB.addDemolition(demolitionData);
+                        }
+                    }
+                } else if (window.demolitionDB) {
+                    demolitionId = await window.demolitionDB.addDemolition(demolitionData);
+                }
                 
                 showMessage('Demolição salva com sucesso!', 'success');
                 clearForm();

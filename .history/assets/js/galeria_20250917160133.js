@@ -411,14 +411,21 @@ class GalleryManager {
     createGalleryItemHTML(photo, index) {
         return `
             <div class="gallery-item" data-photo-id="${photo.id}" style="animation-delay: ${index * 0.05}s">
-                <img src="${photo.image}" alt="Foto ${photo.photoIndex || index + 1}" loading="lazy" 
+                <img src="${photo.image}" alt="${photo.title}" loading="lazy" 
                      onerror="this.src='assets/images/construction-site-1.jpg'; this.alt='Imagem não encontrada';"
                      onload="console.log('Imagem carregada:', '${photo.image}')">
                 <div class="gallery-overlay">
-                    <span class="photo-index">Foto ${photo.photoIndex || index + 1} de ${photo.totalPhotos || 1}</span>
+                    <h3>${photo.title}</h3>
+                    <p>${photo.description}</p>
+                    ${photo.photoIndex ? `<span class="photo-index">Foto ${photo.photoIndex} de ${photo.totalPhotos}</span>` : ''}
                 </div>
                 <div class="gallery-info">
-                    <span class="photo-number">Foto ${photo.photoIndex || index + 1}</span>
+                    <h3>${photo.title}</h3>
+                    <p>${photo.description}</p>
+                    <div class="gallery-meta">
+                        <span class="gallery-category">${this.getCategoryName(photo.category)}</span>
+                        <span class="gallery-date">${this.formatDate(photo.date)}</span>
+                    </div>
                 </div>
             </div>
         `;

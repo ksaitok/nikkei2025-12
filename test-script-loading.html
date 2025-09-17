@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Carregamento de Scripts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste de Carregamento de Scripts</h1>
+        <p>Esta página testa se os scripts JavaScript estão sendo carregados corretamente.</p>
+        
+        <div id="status"></div>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            document.getElementById('status').innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function addLog(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function testScriptLoading() {
+            updateStatus('⏳ Testando carregamento de scripts...', 'warning');
+            
+            // Testar se o script da galeria está carregado
+            const script = document.createElement('script');
+            script.src = 'assets/js/galeria.js';
+            script.onload = function() {
+                addLog('✅ Script galeria.js carregado com sucesso');
+                
+                // Verificar se a classe GalleryManager existe
+                if (typeof GalleryManager !== 'undefined') {
+                    addLog('✅ Classe GalleryManager encontrada');
+                    updateStatus('✅ Todos os scripts carregados com sucesso!', 'success');
+                    
+                    // Tentar criar uma instância
+                    try {
+                        const gallery = new GalleryManager();
+                        addLog('✅ Instância da galeria criada com sucesso');
+                        addLog(`📊 Itens carregados: ${gallery.allItems.length}`);
+                    } catch (error) {
+                        addLog(`❌ Erro ao criar instância: ${error.message}`);
+                        updateStatus('❌ Erro ao criar instância da galeria', 'error');
+                    }
+                } else {
+                    addLog('❌ Classe GalleryManager não encontrada');
+                    updateStatus('❌ Classe GalleryManager não encontrada', 'error');
+                }
+            };
+            script.onerror = function() {
+                addLog('❌ Erro ao carregar script galeria.js');
+                updateStatus('❌ Erro ao carregar script da galeria', 'error');
+            };
+            document.head.appendChild(script);
+        }
+        
+        function testAdminScript() {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin.js';
+            script.onload = function() {
+                addLog('✅ Script admin.js carregado com sucesso');
+                
+                if (typeof AdminManager !== 'undefined') {
+                    addLog('✅ Classe AdminManager encontrada');
+                } else {
+                    addLog('❌ Classe AdminManager não encontrada');
+                }
+            };
+            script.onerror = function() {
+                addLog('❌ Erro ao carregar script admin.js');
+            };
+            document.head.appendChild(script);
+        }
+        
+        // Executar testes
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('DOM carregado, iniciando testes...');
+            testScriptLoading();
+            setTimeout(testAdminScript, 1000);
+        });
+    </script>
+</body>
+</html>

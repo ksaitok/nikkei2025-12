@@ -112,14 +112,28 @@ class AdminManager {
     
     // Mostrar tela de login
     showLoginScreen() {
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('admin-panel').style.display = 'none';
+        const loginScreen = document.getElementById('login-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        
+        if (loginScreen) {
+            loginScreen.style.display = 'flex';
+        }
+        if (adminPanel) {
+            adminPanel.style.display = 'none';
+        }
     }
     
     // Mostrar painel admin
     showAdminPanel() {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('admin-panel').style.display = 'block';
+        const loginScreen = document.getElementById('login-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        
+        if (loginScreen) {
+            loginScreen.style.display = 'none';
+        }
+        if (adminPanel) {
+            adminPanel.style.display = 'block';
+        }
         this.updateStats();
     }
     
@@ -682,10 +696,15 @@ class AdminManager {
         const commercialCount = this.photos.filter(p => p.category === 'commercial').length;
         const industrialCount = this.photos.filter(p => p.category === 'industrial').length;
         
-        document.getElementById('total-photos').textContent = totalPhotos;
-        document.getElementById('residential-count').textContent = residentialCount;
-        document.getElementById('commercial-count').textContent = commercialCount;
-        document.getElementById('industrial-count').textContent = industrialCount;
+        const totalPhotosEl = document.getElementById('total-photos');
+        const residentialCountEl = document.getElementById('residential-count');
+        const commercialCountEl = document.getElementById('commercial-count');
+        const industrialCountEl = document.getElementById('industrial-count');
+        
+        if (totalPhotosEl) totalPhotosEl.textContent = totalPhotos;
+        if (residentialCountEl) residentialCountEl.textContent = residentialCount;
+        if (commercialCountEl) commercialCountEl.textContent = commercialCount;
+        if (industrialCountEl) industrialCountEl.textContent = industrialCount;
     }
     
     // Lidar com preview de múltiplas imagens

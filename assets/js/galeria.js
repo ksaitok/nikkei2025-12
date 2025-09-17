@@ -24,13 +24,43 @@ class GalleryManager {
     async loadGalleryData() {
         try {
             console.log('Carregando dados da galeria...');
-            // Carregar dados do localStorage ou usar dados padrão
+            
+            // Tentar carregar do banco de dados primeiro
+            if (window.demolitionDB) {
+                try {
+                    const demolitions = await window.demolitionDB.getAllDemolitions();
+                    if (demolitions && demolitions.length > 0) {
+                        // Converter dados do banco para formato da galeria
+                        this.allItems = demolitions.map(demolition => ({
+                            id: demolition.id,
+                            title: demolition.title,
+                            description: demolition.description,
+                            image: demolition.images && demolition.images.length > 0 ? demolition.images[0].data : 'assets/images/construction-site-1.jpg',
+                            category: demolition.category,
+                            date: demolition.date,
+                            location: demolition.location,
+                            locationGroup: demolition.location.replace(/\s+/g, '-').toLowerCase() + '-' + demolition.date,
+                            photoIndex: 1,
+                            totalPhotos: demolition.images ? demolition.images.length : 1,
+                            details: demolition.description,
+                            images: demolition.images || []
+                        }));
+                        console.log('Dados carregados do banco de dados:', this.allItems.length, 'itens');
+                        this.renderGallery();
+                        return;
+                    }
+                } catch (error) {
+                    console.log('Erro ao carregar do banco de dados, usando localStorage:', error);
+                }
+            }
+            
+            // Fallback para localStorage
             const savedPhotos = localStorage.getItem('galleryPhotos');
             if (savedPhotos) {
                 this.allItems = JSON.parse(savedPhotos);
                 console.log('Dados carregados do localStorage:', this.allItems.length, 'itens');
             } else {
-                console.log('Nenhum dado encontrado no localStorage, usando dados padrão');
+                console.log('Nenhum dado encontrado, usando dados padrão');
                 // Dados padrão - Agrupados por título da demolição
                 this.allItems = [
                 // Demolição 1: Casa Residencial em São Paulo - Múltiplas fotos

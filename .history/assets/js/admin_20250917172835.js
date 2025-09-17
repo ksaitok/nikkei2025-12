@@ -168,10 +168,7 @@ class AdminManager {
         const savedPhotos = localStorage.getItem('galleryPhotos');
         if (savedPhotos) {
             this.photos = JSON.parse(savedPhotos);
-            console.log('Fotos carregadas do localStorage:', this.photos.length);
-            console.log('Dados carregados:', this.photos);
         } else {
-            console.log('Nenhuma foto encontrada no localStorage, usando dados padrão');
             // Dados padrão
             this.photos = [
                 {

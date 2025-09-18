@@ -304,6 +304,112 @@
             background: #c0392b;
             transform: scale(1.1);
         }
+
+        .image-count-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .demolition-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .demolition-info {
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1001;
+        }
         
         @media (max-width: 768px) {
             .filters-grid {
@@ -658,7 +764,7 @@
             }
         }
 
-        // Renderizar demolições
+        // Renderizar demolições agrupadas por título
         function renderDemolitions() {
             const container = document.getElementById('demolitions-container');
             
@@ -673,54 +779,201 @@
                 return;
             }
 
-            const html = filteredDemolitions.map(demolition => `
-                <div class="demolition-card">
-                    <div class="demolition-image">
-                        <img src="${getDemolitionImage(demolition)}" 
-                             alt="${demolition.title}"
-                             onerror="this.src='assets/images/construction-site-1.jpg'">
-                        <div class="demolition-badge">${getCategoryName(demolition.category)}</div>
+            // Agrupar demolições por título
+            const groupedDemolitions = groupDemolitionsByTitle(filteredDemolitions);
+            console.log('📊 Demolições agrupadas:', groupedDemolitions);
+
+            const html = Object.values(groupedDemolitions).map(group => {
+                const demolition = group.demolitions[0]; // Usar a primeira demolição do grupo
+                const imageCount = group.totalImages;
+                
+                return `
+                    <div class="demolition-card">
+                        <div class="demolition-image">
+                            <img src="${getDemolitionImage(demolition)}" 
+                                 alt="${demolition.title}"
+                                 onerror="this.src='assets/images/construction-site-1.jpg'">
+                            <div class="demolition-badge">${getCategoryName(demolition.category)}</div>
+                            ${imageCount > 1 ? `<div class="image-count-badge">${imageCount} fotos</div>` : ''}
+                        </div>
+                        <div class="demolition-content">
+                            <h3 class="demolition-title">${demolition.title}</h3>
+                            <div class="demolition-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${demolition.location}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>${formatDate(demolition.date)}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-images"></i>
+                                    <span>${imageCount} foto(s)</span>
+                                </div>
+                            </div>
+                            <div class="demolition-description">
+                                ${demolition.description}
+                            </div>
+                            <div class="demolition-actions">
+                                <button class="btn btn-outline btn-sm" onclick="viewDemolitionGroup('${group.title}')">
+                                    <i class="fas fa-eye"></i> Ver Todas as Fotos (${imageCount})
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="demolition-content">
-                        <h3 class="demolition-title">${demolition.title}</h3>
-                        <div class="demolition-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>${demolition.location}</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>${formatDate(demolition.date)}</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-images"></i>
-                                <span>${demolition.image_count || 0} foto(s)</span>
-                            </div>
-                        </div>
-                        <div class="demolition-description">
-                            ${demolition.description}
-                        </div>
-                        <div class="demolition-actions">
-                            <button class="btn btn-outline btn-sm" onclick="viewDemolition(${demolition.id})">
-                                <i class="fas fa-eye"></i> Ver Detalhes
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             container.innerHTML = `<div class="demolitions-grid">${html}</div>`;
         }
 
+        // Agrupar demolições por título
+        function groupDemolitionsByTitle(demolitions) {
+            const groups = {};
+            
+            demolitions.forEach(demolition => {
+                const title = demolition.title;
+                
+                if (!groups[title]) {
+                    groups[title] = {
+                        title: title,
+                        demolitions: [],
+                        totalImages: 0
+                    };
+                }
+                
+                groups[title].demolitions.push(demolition);
+                
+                // Contar imagens
+                if (demolition.images && demolition.images.length > 0) {
+                    groups[title].totalImages += demolition.images.length;
+                } else {
+                    groups[title].totalImages += 1; // Imagem padrão
+                }
+            });
+            
+            console.log('📋 Grupos criados:', Object.keys(groups).length);
+            return groups;
+        }
+
+        // Ver grupo de demolições
+        function viewDemolitionGroup(title) {
+            const group = Object.values(groupDemolitionsByTitle(filteredDemolitions)).find(g => g.title === title);
+            if (group) {
+                showDemolitionGroupModal(group);
+            }
+        }
+
+        // Mostrar modal do grupo de demolições
+        function showDemolitionGroupModal(group) {
+            const modal = document.createElement('div');
+            modal.className = 'demolition-modal';
+            modal.innerHTML = `
+                <div class="modal-overlay" onclick="closeModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h2>${group.title}</h2>
+                            <button class="modal-close" onclick="closeModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="demolition-info">
+                                <div class="info-item">
+                                    <strong>Localização:</strong> ${group.demolitions[0].location}
+                                </div>
+                                <div class="info-item">
+                                    <strong>Data:</strong> ${formatDate(group.demolitions[0].date)}
+                                </div>
+                                <div class="info-item">
+                                    <strong>Categoria:</strong> ${getCategoryName(group.demolitions[0].category)}
+                                </div>
+                                <div class="info-item">
+                                    <strong>Descrição:</strong> ${group.demolitions[0].description}
+                                </div>
+                            </div>
+                            <div class="photos-grid">
+                                ${group.demolitions.map(demolition => 
+                                    demolition.images ? demolition.images.map(image => `
+                                        <div class="photo-item">
+                                            <img src="${typeof image === 'string' ? image : (image.data || image.url)}" 
+                                                 alt="${group.title}" 
+                                                 onclick="openImageModal('${typeof image === 'string' ? image : (image.data || image.url)}')">
+                                        </div>
+                                    `).join('') : ''
+                                ).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Fechar modal
+        function closeModal() {
+            const modal = document.querySelector('.demolition-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Abrir modal de imagem
+        function openImageModal(imageSrc) {
+            const modal = document.createElement('div');
+            modal.className = 'image-modal';
+            modal.innerHTML = `
+                <div class="modal-overlay" onclick="closeImageModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <button class="modal-close" onclick="closeImageModal()">&times;</button>
+                        <img src="${imageSrc}" alt="Imagem ampliada" style="max-width: 90vw; max-height: 90vh;">
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Fechar modal de imagem
+        function closeImageModal() {
+            const modal = document.querySelector('.image-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
         // Obter imagem da demolição
         function getDemolitionImage(demolition) {
+            console.log('🔍 Verificando imagem para demolição:', demolition.title);
+            console.log('📸 Imagens disponíveis:', demolition.images);
+            
             if (demolition.images && demolition.images.length > 0) {
-                if (demolition.images[0].startsWith('http')) {
-                    return demolition.images[0];
-                } else {
-                    return `http://localhost:3001/uploads/demolitions/${demolition.images[0]}`;
+                const firstImage = demolition.images[0];
+                console.log('🖼️ Primeira imagem:', firstImage);
+                
+                // Se for uma string (caminho da imagem)
+                if (typeof firstImage === 'string') {
+                    if (firstImage.startsWith('http')) {
+                        console.log('✅ Imagem URL completa:', firstImage);
+                        return firstImage;
+                    } else {
+                        console.log('✅ Imagem local:', firstImage);
+                        return firstImage;
+                    }
+                }
+                // Se for um objeto com propriedades
+                else if (typeof firstImage === 'object' && firstImage.data) {
+                    console.log('✅ Imagem objeto com data:', firstImage.data);
+                    return firstImage.data;
+                }
+                // Se for um objeto com url
+                else if (typeof firstImage === 'object' && firstImage.url) {
+                    console.log('✅ Imagem objeto com url:', firstImage.url);
+                    return firstImage.url;
                 }
             }
+            
+            console.log('⚠️ Usando imagem padrão');
             return 'assets/images/construction-site-1.jpg';
         }
 

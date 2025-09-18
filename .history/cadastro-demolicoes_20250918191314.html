@@ -327,64 +327,18 @@
 <body>
     <!-- Header -->
     <header class="header">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-logo">
-                    <a href="index.html" class="logo-link">
-                        <img src="assets/images/logo/nkk-logo.svg" alt="NKK Nikkei Kaitai Kogyo" class="logo-image">
-                        <span class="logo-text" data-translate="company-name">日系解体工業株式会社</span>
-                    </a>
-                </div>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="index.html" class="nav-link" data-translate="nav-home">ホーム</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="index.html#services" class="nav-link" data-translate="nav-services">サービス</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="processo-demolicao.html" class="nav-link" data-translate="nav-process">工事の流れ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="post-fire-demolition.html" class="nav-link" data-translate="nav-post-fire">火事解体</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="cadastro-demolicoes.html" class="nav-link" data-translate="nav-cadastro">施工現場</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="index.html#company" class="nav-link" data-translate="nav-company">会社概要</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="index.html#contact" class="nav-link" data-translate="nav-contact">お問い合わせ</a>
-                    </li>
-                    <li class="nav-item" style="display: block !important; visibility: visible !important; position: relative;">
-                        <div style="display: inline-block !important; position: relative;">
-                            <button onclick="toggleLanguageMenu()" style="background: #c0392b; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600;">
-                                <i class="fas fa-globe" style="color: white;"></i>
-                                <span id="current-lang">日本語</span>
-                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
-                            </button>
-                            <ul id="language-menu" style="position: absolute; top: 100%; right: 0; background: white; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 1000; min-width: 150px; display: none; list-style: none; margin: 0; padding: 0;">
-                                <li><a href="#" onclick="changeLanguage('ja')" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                                    <span>🇯🇵</span> 日本語
-                                </a></li>
-                                <li><a href="#" onclick="changeLanguage('pt')" style="display: block; padding: 10px 15px; color: #333; text-decoration: none; border-bottom: 1px solid #eee;">
-                                    <span>🇧🇷</span> Português
-                                </a></li>
-                                <li><a href="#" onclick="changeLanguage('en')" style="display: block; padding: 10px 15px; color: #333; text-decoration: none;">
-                                    <span>🇺🇸</span> English
-                                </a></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-                <div class="nav-toggle">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                </div>
+        <div class="container">
+            <div class="nav-logo">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/images/logo/nkk-logo.svg" alt="NKK Nikkei Kaitai Kogyo" class="logo-image">
+                    <span class="logo-text">日系解体工業株式会社</span>
+                </a>
             </div>
-        </nav>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="admin.html" class="nav-link">Admin</a>
+            </nav>
+        </div>
     </header>
 
     <!-- Main Content -->
@@ -392,13 +346,13 @@
         <div class="demolitions-container">
             <!-- Header -->
             <div class="page-header">
-                <h1><i class="fas fa-hammer"></i> <span data-translate="cadastro-title">Cadastro de Demolições</span></h1>
-                <p data-translate="cadastro-subtitle">Registro completo de demolições realizadas pela NKK</p>
+                <h1><i class="fas fa-hammer"></i> Cadastro de Demolições</h1>
+                <p>Registro completo de demolições realizadas pela NKK</p>
             </div>
 
             <!-- Statistics -->
             <div class="stats-section">
-                <h2><i class="fas fa-chart-bar"></i> <span data-translate="cadastro-stats">Estatísticas</span></h2>
+                <h2><i class="fas fa-chart-bar"></i> Estatísticas</h2>
                 <div class="stats-grid" id="stats-grid">
                     <div class="loading">
                         <i class="fas fa-spinner"></i>
@@ -409,36 +363,36 @@
 
             <!-- Filters -->
             <div class="filters-section">
-                <h2><i class="fas fa-filter"></i> <span data-translate="cadastro-filters">Filtros</span></h2>
+                <h2><i class="fas fa-filter"></i> Filtros</h2>
                 <div class="filters-grid">
                     <div class="filter-group">
                         <label for="category-filter">Categoria</label>
                         <select id="category-filter">
-                            <option value="" data-translate="cadastro-category-all">Todas as categorias</option>
-                            <option value="residential" data-translate="cadastro-category-residential">Residencial</option>
-                            <option value="commercial" data-translate="cadastro-category-commercial">Comercial</option>
-                            <option value="industrial" data-translate="cadastro-category-industrial">Industrial</option>
-                            <option value="fire-damage" data-translate="cadastro-category-fire">Pós-Incêndio</option>
+                            <option value="">Todas as categorias</option>
+                            <option value="residential">Residencial</option>
+                            <option value="commercial">Comercial</option>
+                            <option value="industrial">Industrial</option>
+                            <option value="fire-damage">Pós-Incêndio</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
                         <label for="location-filter">Localização</label>
-                        <input type="text" id="location-filter" placeholder="Digite a localização..." data-translate-placeholder="cadastro-location-placeholder">
+                        <input type="text" id="location-filter" placeholder="Digite a localização...">
                     </div>
                     
                     <div class="filter-group">
                         <label for="search-filter">Buscar</label>
-                        <input type="text" id="search-filter" placeholder="Título, descrição..." data-translate-placeholder="cadastro-search-placeholder">
+                        <input type="text" id="search-filter" placeholder="Título, descrição...">
                     </div>
                 </div>
                 
                 <div class="filter-actions">
                     <button class="btn btn-primary" onclick="applyFilters()">
-                        <i class="fas fa-search"></i> <span data-translate="cadastro-filter-btn">Filtrar</span>
+                        <i class="fas fa-search"></i> Filtrar
                     </button>
                     <button class="btn btn-secondary" onclick="clearFilters()">
-                        <i class="fas fa-eraser"></i> <span data-translate="cadastro-clear-btn">Limpar</span>
+                        <i class="fas fa-eraser"></i> Limpar
                     </button>
                 </div>
             </div>
@@ -454,7 +408,7 @@
     </main>
 
     <!-- Admin Link -->
-    <a href="admin.html" class="admin-link" title="Área Administrativa" data-translate-title="cadastro-admin-link">
+    <a href="admin.html" class="admin-link" title="Área Administrativa">
         <i class="fas fa-cog"></i>
     </a>
 
@@ -491,7 +445,6 @@
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/database.js"></script>
     <script src="assets/js/language-simple.js"></script>
-    <script src="assets/js/script.js"></script>
     <script>
         let allDemolitions = [];
         let filteredDemolitions = [];

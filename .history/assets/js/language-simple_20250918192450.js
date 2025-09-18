@@ -272,24 +272,7 @@ const translations = {
         'area-kawasaki': '川崎市',
         'area-chigasaki': '茅ヶ崎市',
         'area-shonan': '湘南エリア',
-        'footer-company-info': '会社情報',
-        'cadastro-title': '解体工事登録',
-        'cadastro-subtitle': 'NKKが実施した解体工事の完全な記録',
-        'cadastro-stats': '統計',
-        'cadastro-filters': 'フィルター',
-        'cadastro-category-all': 'すべてのカテゴリ',
-        'cadastro-category-residential': '住宅',
-        'cadastro-category-commercial': '商業',
-        'cadastro-category-industrial': '工業',
-        'cadastro-category-fire': '火災後',
-        'cadastro-location-placeholder': '場所を入力...',
-        'cadastro-search-placeholder': 'タイトル、説明...',
-        'cadastro-filter-btn': 'フィルター',
-        'cadastro-clear-btn': 'クリア',
-        'cadastro-loading': '解体工事を読み込み中...',
-        'cadastro-no-data': '解体工事が見つかりません',
-        'cadastro-no-data-desc': '適用されたフィルターに一致する解体工事がありません。',
-        'cadastro-admin-link': '管理エリア'
+        'footer-company-info': '会社情報'
     },
     'pt': {
         'nav-home': 'Início',
@@ -848,24 +831,7 @@ const translations = {
         'area-kawasaki': 'Kawasaki',
         'area-chigasaki': 'Chigasaki',
         'area-shonan': 'Shonan Area',
-        'footer-company-info': 'Company Information',
-        'cadastro-title': 'Demolition Registry',
-        'cadastro-subtitle': 'Complete record of demolitions performed by NKK',
-        'cadastro-stats': 'Statistics',
-        'cadastro-filters': 'Filters',
-        'cadastro-category-all': 'All categories',
-        'cadastro-category-residential': 'Residential',
-        'cadastro-category-commercial': 'Commercial',
-        'cadastro-category-industrial': 'Industrial',
-        'cadastro-category-fire': 'Post-Fire',
-        'cadastro-location-placeholder': 'Enter location...',
-        'cadastro-search-placeholder': 'Title, description...',
-        'cadastro-filter-btn': 'Filter',
-        'cadastro-clear-btn': 'Clear',
-        'cadastro-loading': 'Loading demolitions...',
-        'cadastro-no-data': 'No demolitions found',
-        'cadastro-no-data-desc': 'There are no demolitions that match the applied filters.',
-        'cadastro-admin-link': 'Administrative Area'
+        'footer-company-info': 'Company Information'
     }
 };
 

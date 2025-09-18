@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Integração - NKK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste de Integração - Sistema NKK</h1>
+    
+    <div class="test-section">
+        <h2>📊 Status dos Servidores</h2>
+        <div id="server-status">
+            <div class="loading">Verificando servidores...</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🗄️ Teste de API - Demolições</h2>
+        <button class="btn" onclick="testDemolitionsAPI()">Testar API de Demolições</button>
+        <div id="demolitions-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📈 Teste de API - Estatísticas</h2>
+        <button class="btn" onclick="testStatisticsAPI()">Testar API de Estatísticas</button>
+        <div id="statistics-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🌐 Teste de Páginas</h2>
+        <button class="btn" onclick="testPages()">Testar Páginas</button>
+        <div id="pages-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔗 Links de Teste</h2>
+        <p>
+            <a href="http://localhost:8000/" target="_blank" class="btn">🏠 Página Principal</a>
+            <a href="http://localhost:8000/cadastro-demolicoes.html" target="_blank" class="btn">📋 Cadastro de Demolições</a>
+            <a href="http://localhost:8000/admin.html" target="_blank" class="btn">🔐 Painel Administrativo</a>
+        </p>
+    </div>
+
+    <script>
+        // Verificar status dos servidores
+        async function checkServerStatus() {
+            const statusDiv = document.getElementById('server-status');
+            
+            try {
+                // Testar servidor web
+                const webResponse = await fetch('http://localhost:8000/');
+                const webStatus = webResponse.ok ? '✅ Servidor Web (8000): OK' : '❌ Servidor Web (8000): ERRO';
+                
+                // Testar servidor API
+                const apiResponse = await fetch('http://localhost:3001/api/demolitions');
+                const apiStatus = apiResponse.ok ? '✅ Servidor API (3001): OK' : '❌ Servidor API (3001): ERRO';
+                
+                statusDiv.innerHTML = `
+                    <div class="test-result success">${webStatus}</div>
+                    <div class="test-result success">${apiStatus}</div>
+                `;
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="test-result error">❌ Erro ao verificar servidores: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Testar API de demolições
+        async function testDemolitionsAPI() {
+            const resultDiv = document.getElementById('demolitions-result');
+            resultDiv.innerHTML = '<div class="loading">Testando API de demolições...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/demolitions');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="test-result success">✅ API de Demolições: OK</div>
+                    <div class="data-display">${JSON.stringify(data, null, 2)}</div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-result error">❌ Erro na API de Demolições: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Testar API de estatísticas
+        async function testStatisticsAPI() {
+            const resultDiv = document.getElementById('statistics-result');
+            resultDiv.innerHTML = '<div class="loading">Testando API de estatísticas...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/statistics');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <div class="test-result success">✅ API de Estatísticas: OK</div>
+                    <div class="data-display">${JSON.stringify(data, null, 2)}</div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-result error">❌ Erro na API de Estatísticas: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Testar páginas
+        async function testPages() {
+            const resultDiv = document.getElementById('pages-result');
+            resultDiv.innerHTML = '<div class="loading">Testando páginas...</div>';
+            
+            const pages = [
+                { name: 'Página Principal', url: 'http://localhost:8000/' },
+                { name: 'Cadastro de Demolições', url: 'http://localhost:8000/cadastro-demolicoes.html' },
+                { name: 'Painel Administrativo', url: 'http://localhost:8000/admin.html' }
+            ];
+            
+            let results = [];
+            
+            for (const page of pages) {
+                try {
+                    const response = await fetch(page.url);
+                    if (response.ok) {
+                        results.push(`✅ ${page.name}: OK`);
+                    } else {
+                        results.push(`❌ ${page.name}: ERRO (${response.status})`);
+                    }
+                } catch (error) {
+                    results.push(`❌ ${page.name}: ERRO (${error.message})`);
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="test-result success">Teste de Páginas Concluído</div>
+                <div class="data-display">${results.join('\n')}</div>
+            `;
+        }
+        
+        // Inicializar testes
+        document.addEventListener('DOMContentLoaded', () => {
+            checkServerStatus();
+        });
+    </script>
+</body>
+</html>

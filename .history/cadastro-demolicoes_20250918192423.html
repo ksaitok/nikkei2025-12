@@ -392,13 +392,13 @@
         <div class="demolitions-container">
             <!-- Header -->
             <div class="page-header">
-                <h1><i class="fas fa-hammer"></i> <span data-translate="cadastro-title">Cadastro de Demolições</span></h1>
-                <p data-translate="cadastro-subtitle">Registro completo de demolições realizadas pela NKK</p>
+                <h1><i class="fas fa-hammer"></i> Cadastro de Demolições</h1>
+                <p>Registro completo de demolições realizadas pela NKK</p>
             </div>
 
             <!-- Statistics -->
             <div class="stats-section">
-                <h2><i class="fas fa-chart-bar"></i> <span data-translate="cadastro-stats">Estatísticas</span></h2>
+                <h2><i class="fas fa-chart-bar"></i> Estatísticas</h2>
                 <div class="stats-grid" id="stats-grid">
                     <div class="loading">
                         <i class="fas fa-spinner"></i>
@@ -409,36 +409,36 @@
 
             <!-- Filters -->
             <div class="filters-section">
-                <h2><i class="fas fa-filter"></i> <span data-translate="cadastro-filters">Filtros</span></h2>
+                <h2><i class="fas fa-filter"></i> Filtros</h2>
                 <div class="filters-grid">
                     <div class="filter-group">
                         <label for="category-filter">Categoria</label>
                         <select id="category-filter">
-                            <option value="" data-translate="cadastro-category-all">Todas as categorias</option>
-                            <option value="residential" data-translate="cadastro-category-residential">Residencial</option>
-                            <option value="commercial" data-translate="cadastro-category-commercial">Comercial</option>
-                            <option value="industrial" data-translate="cadastro-category-industrial">Industrial</option>
-                            <option value="fire-damage" data-translate="cadastro-category-fire">Pós-Incêndio</option>
+                            <option value="">Todas as categorias</option>
+                            <option value="residential">Residencial</option>
+                            <option value="commercial">Comercial</option>
+                            <option value="industrial">Industrial</option>
+                            <option value="fire-damage">Pós-Incêndio</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
                         <label for="location-filter">Localização</label>
-                        <input type="text" id="location-filter" placeholder="Digite a localização..." data-translate-placeholder="cadastro-location-placeholder">
+                        <input type="text" id="location-filter" placeholder="Digite a localização...">
                     </div>
                     
                     <div class="filter-group">
                         <label for="search-filter">Buscar</label>
-                        <input type="text" id="search-filter" placeholder="Título, descrição..." data-translate-placeholder="cadastro-search-placeholder">
+                        <input type="text" id="search-filter" placeholder="Título, descrição...">
                     </div>
                 </div>
                 
                 <div class="filter-actions">
                     <button class="btn btn-primary" onclick="applyFilters()">
-                        <i class="fas fa-search"></i> <span data-translate="cadastro-filter-btn">Filtrar</span>
+                        <i class="fas fa-search"></i> Filtrar
                     </button>
                     <button class="btn btn-secondary" onclick="clearFilters()">
-                        <i class="fas fa-eraser"></i> <span data-translate="cadastro-clear-btn">Limpar</span>
+                        <i class="fas fa-eraser"></i> Limpar
                     </button>
                 </div>
             </div>
@@ -454,7 +454,7 @@
     </main>
 
     <!-- Admin Link -->
-    <a href="admin.html" class="admin-link" title="Área Administrativa" data-translate-title="cadastro-admin-link">
+    <a href="admin.html" class="admin-link" title="Área Administrativa">
         <i class="fas fa-cog"></i>
     </a>
 
@@ -491,7 +491,6 @@
     <script src="assets/js/api-client.js"></script>
     <script src="assets/js/database.js"></script>
     <script src="assets/js/language-simple.js"></script>
-    <script src="assets/js/script.js"></script>
     <script>
         let allDemolitions = [];
         let filteredDemolitions = [];

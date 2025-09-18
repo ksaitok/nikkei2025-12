@@ -22,21 +22,6 @@ class AdminManager {
         this.checkAuthentication();
         this.setupEventListeners();
         this.loadPhotos();
-        this.setupPeriodicAuthCheck();
-    }
-    
-    // Configurar verificação periódica de autenticação
-    setupPeriodicAuthCheck() {
-        // Verificar autenticação a cada 5 minutos
-        setInterval(() => {
-            if (this.isAuthenticated) {
-                const token = localStorage.getItem('adminToken');
-                if (!token || !this.validateToken(token)) {
-                    this.handleLogout();
-                    this.showMessage('Sessão expirada. Faça login novamente.', 'error');
-                }
-            }
-        }, 5 * 60 * 1000); // 5 minutos
     }
     
     // Verificar autenticação
@@ -226,16 +211,6 @@ class AdminManager {
     
     // Verificar se usuário está autenticado
     requireAuthentication() {
-        // Verificar se ainda está autenticado
-        const token = localStorage.getItem('adminToken');
-        if (!token || !this.validateToken(token)) {
-            this.isAuthenticated = false;
-            localStorage.removeItem('adminToken');
-            this.showLoginScreen();
-            this.showMessage('Sessão expirada. Faça login novamente.', 'error');
-            return false;
-        }
-        
         if (!this.isAuthenticated) {
             this.showLoginScreen();
             this.showMessage('Você precisa fazer login para acessar esta funcionalidade!', 'error');
@@ -328,13 +303,6 @@ class AdminManager {
                 const parsed = JSON.parse(saved);
                 console.log('Verificação - dados carregados do localStorage:', parsed.length);
             }
-            
-            // Disparar evento para notificar outras páginas
-            window.dispatchEvent(new CustomEvent('galleryUpdated', {
-                detail: { count: this.photos.length }
-            }));
-            console.log('Evento galleryUpdated disparado');
-            
         } catch (error) {
             console.error('Erro ao salvar fotos:', error);
         }

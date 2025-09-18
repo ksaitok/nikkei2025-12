@@ -22,21 +22,6 @@ class AdminManager {
         this.checkAuthentication();
         this.setupEventListeners();
         this.loadPhotos();
-        this.setupPeriodicAuthCheck();
-    }
-    
-    // Configurar verificação periódica de autenticação
-    setupPeriodicAuthCheck() {
-        // Verificar autenticação a cada 5 minutos
-        setInterval(() => {
-            if (this.isAuthenticated) {
-                const token = localStorage.getItem('adminToken');
-                if (!token || !this.validateToken(token)) {
-                    this.handleLogout();
-                    this.showMessage('Sessão expirada. Faça login novamente.', 'error');
-                }
-            }
-        }, 5 * 60 * 1000); // 5 minutos
     }
     
     // Verificar autenticação
@@ -221,27 +206,6 @@ class AdminManager {
         this.isAuthenticated = false;
         this.currentUser = null;
         this.showLoginScreen();
-        this.showMessage('Logout realizado com sucesso!', 'success');
-    }
-    
-    // Verificar se usuário está autenticado
-    requireAuthentication() {
-        // Verificar se ainda está autenticado
-        const token = localStorage.getItem('adminToken');
-        if (!token || !this.validateToken(token)) {
-            this.isAuthenticated = false;
-            localStorage.removeItem('adminToken');
-            this.showLoginScreen();
-            this.showMessage('Sessão expirada. Faça login novamente.', 'error');
-            return false;
-        }
-        
-        if (!this.isAuthenticated) {
-            this.showLoginScreen();
-            this.showMessage('Você precisa fazer login para acessar esta funcionalidade!', 'error');
-            return false;
-        }
-        return true;
     }
     
     // Carregar fotos
@@ -328,13 +292,6 @@ class AdminManager {
                 const parsed = JSON.parse(saved);
                 console.log('Verificação - dados carregados do localStorage:', parsed.length);
             }
-            
-            // Disparar evento para notificar outras páginas
-            window.dispatchEvent(new CustomEvent('galleryUpdated', {
-                detail: { count: this.photos.length }
-            }));
-            console.log('Evento galleryUpdated disparado');
-            
         } catch (error) {
             console.error('Erro ao salvar fotos:', error);
         }
@@ -659,11 +616,6 @@ class AdminManager {
     
     // Atualizar grupo de demolição
     updateDemolitionGroup(oldTitle) {
-        // Verificar autenticação
-        if (!this.requireAuthentication()) {
-            return;
-        }
-        
         const form = document.getElementById('add-photo-form');
         const formData = new FormData(form);
         
@@ -742,11 +694,6 @@ class AdminManager {
     
     // Excluir grupo de demolição
     deleteDemolitionGroup(title) {
-        // Verificar autenticação
-        if (!this.requireAuthentication()) {
-            return;
-        }
-        
         if (confirm(`Tem certeza que deseja excluir a demolição "${title}" e todas as suas fotos?`)) {
             this.photos = this.photos.filter(photo => photo.title !== title);
             this.savePhotos();
@@ -832,11 +779,6 @@ class AdminManager {
     
     // Lidar com adição de múltiplas fotos
     handleAddPhoto() {
-        // Verificar autenticação
-        if (!this.requireAuthentication()) {
-            return;
-        }
-        
         const form = document.getElementById('add-photo-form');
         const formData = new FormData(form);
         

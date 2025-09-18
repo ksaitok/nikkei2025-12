@@ -328,13 +328,6 @@ class AdminManager {
                 const parsed = JSON.parse(saved);
                 console.log('Verificação - dados carregados do localStorage:', parsed.length);
             }
-            
-            // Disparar evento para notificar outras páginas
-            window.dispatchEvent(new CustomEvent('galleryUpdated', {
-                detail: { count: this.photos.length }
-            }));
-            console.log('Evento galleryUpdated disparado');
-            
         } catch (error) {
             console.error('Erro ao salvar fotos:', error);
         }

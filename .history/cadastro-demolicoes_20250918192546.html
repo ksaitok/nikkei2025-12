@@ -501,7 +501,6 @@
             await loadStatistics();
             await loadDemolitions();
             setupEventListeners();
-            setupStorageListener();
         });
 
         // Carregar estatísticas
@@ -594,19 +593,7 @@
                 if (demolitions.length === 0) {
                     const localData = localStorage.getItem('galleryPhotos');
                     if (localData) {
-                        const localPhotos = JSON.parse(localData);
-                        // Converter dados do localStorage para formato da API
-                        demolitions = localPhotos.map(photo => ({
-                            id: photo.id || Date.now() + Math.random(),
-                            title: photo.title,
-                            category: photo.category,
-                            description: photo.description,
-                            location: photo.location,
-                            date: photo.date,
-                            images: photo.images || [],
-                            image_count: photo.images ? photo.images.length : 0
-                        }));
-                        console.log('Dados carregados do localStorage:', demolitions.length, 'demolições');
+                        demolitions = JSON.parse(localData);
                     }
                 }
 
@@ -716,38 +703,6 @@
             document.getElementById('category-filter').addEventListener('change', applyFilters);
             document.getElementById('location-filter').addEventListener('input', applyFilters);
             document.getElementById('search-filter').addEventListener('input', applyFilters);
-        }
-        
-        // Configurar listener para mudanças no localStorage
-        function setupStorageListener() {
-            // Listener para mudanças no localStorage
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'galleryPhotos') {
-                    console.log('Dados atualizados no localStorage, recarregando...');
-                    loadDemolitions();
-                    loadStatistics();
-                }
-            });
-            
-            // Listener para eventos customizados (quando admin salva dados)
-            window.addEventListener('galleryUpdated', () => {
-                console.log('Evento galleryUpdated recebido, recarregando...');
-                loadDemolitions();
-                loadStatistics();
-            });
-            
-            // Verificar mudanças a cada 5 segundos (fallback)
-            setInterval(() => {
-                const currentData = localStorage.getItem('galleryPhotos');
-                if (currentData) {
-                    const currentPhotos = JSON.parse(currentData);
-                    if (currentPhotos.length !== allDemolitions.length) {
-                        console.log('Detectada mudança nos dados, recarregando...');
-                        loadDemolitions();
-                        loadStatistics();
-                    }
-                }
-            }, 5000);
         }
 
         // Aplicar filtros

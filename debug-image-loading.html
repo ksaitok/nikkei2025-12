@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug de Carregamento de Imagens - NKK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+        .image-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .image-item {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background: #f9f9f9;
+        }
+        .image-item img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .log-container {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug de Carregamento de Imagens - Sistema NKK</h1>
+    
+    <div class="debug-section">
+        <h2>📊 Status do localStorage</h2>
+        <div id="localStorage-status">
+            <div class="status info">Verificando localStorage...</div>
+        </div>
+        <button class="btn" onclick="checkLocalStorage()">🔄 Verificar localStorage</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🧪 Teste de Imagens Individuais</h2>
+        <div id="individual-tests">
+            <div class="status info">Clique em "Testar Imagens Individuais" para verificar</div>
+        </div>
+        <button class="btn" onclick="testIndividualImages()">🧪 Testar Imagens Individuais</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🎭 Simulação da Página de Cadastro</h2>
+        <div id="simulation-results">
+            <div class="status info">Clique em "Simular Página de Cadastro" para testar</div>
+        </div>
+        <button class="btn" onclick="simulateCadastroPage()">🎭 Simular Página de Cadastro</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📋 Logs de Debug</h2>
+        <div id="debug-logs" class="log-container">
+            <div>Console logs aparecerão aqui...</div>
+        </div>
+        <button class="btn" onclick="clearLogs()">🗑️ Limpar Logs</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🔧 Ferramentas de Teste</h2>
+        <button class="btn btn-success" onclick="addTestData()">➕ Adicionar Dados de Teste</button>
+        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Limpar Todos os Dados</button>
+        <button class="btn" onclick="testImagePaths()">🖼️ Testar Caminhos de Imagem</button>
+    </div>
+
+    <script>
+        let debugLogs = [];
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            debugLogs.push(logMessage);
+            console.log(logMessage);
+            updateLogDisplay();
+        }
+        
+        function updateLogDisplay() {
+            const logContainer = document.getElementById('debug-logs');
+            logContainer.innerHTML = debugLogs.slice(-20).join('\n');
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function clearLogs() {
+            debugLogs = [];
+            updateLogDisplay();
+        }
+        
+        function checkLocalStorage() {
+            log('🔍 Verificando localStorage...');
+            const statusDiv = document.getElementById('localStorage-status');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                
+                if (localData) {
+                    const photos = JSON.parse(localData);
+                    log(`✅ Dados encontrados: ${photos.length} itens`);
+                    
+                    statusDiv.innerHTML = `
+                        <div class="status success">✅ Dados encontrados: ${photos.length} itens</div>
+                        <div class="status info">📅 Última verificação: ${new Date().toLocaleString()}</div>
+                    `;
+                    
+                    // Analisar estrutura dos dados
+                    photos.forEach((photo, index) => {
+                        log(`📋 Item ${index + 1}: ${photo.title}`);
+                        log(`   - Categoria: ${photo.category}`);
+                        log(`   - Imagens: ${photo.images ? photo.images.length : 0}`);
+                        if (photo.images && photo.images.length > 0) {
+                            photo.images.forEach((image, imgIndex) => {
+                                log(`     Imagem ${imgIndex + 1}: ${typeof image === 'string' ? image : JSON.stringify(image)}`);
+                            });
+                        }
+                    });
+                } else {
+                    log('❌ Nenhum dado encontrado no localStorage');
+                    statusDiv.innerHTML = `
+                        <div class="status error">❌ Nenhum dado encontrado no localStorage</div>
+                    `;
+                }
+            } catch (error) {
+                log(`❌ Erro ao verificar localStorage: ${error.message}`);
+                statusDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao verificar localStorage: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function testIndividualImages() {
+            log('🧪 Testando imagens individuais...');
+            const container = document.getElementById('individual-tests');
+            container.innerHTML = '<div class="status loading">🧪 Testando imagens...</div>';
+            
+            const testImages = [
+                'assets/images/construction-site-1.jpg',
+                'assets/images/construction-site-2.jpg',
+                'assets/images/construction-site-3.jpg',
+                'assets/images/construction-site-4.jpg',
+                'assets/images/construction-site-5.jpg',
+                'assets/images/construction-site-6.jpg'
+            ];
+            
+            let html = '<div class="image-test">';
+            testImages.forEach((imagePath, index) => {
+                html += `
+                    <div class="image-item">
+                        <h4>Imagem ${index + 1}</h4>
+                        <p><strong>Caminho:</strong> ${imagePath}</p>
+                        <img src="${imagePath}" 
+                             alt="Teste ${index + 1}" 
+                             onload="log('✅ Imagem ${index + 1} carregada: ${imagePath}')"
+                             onerror="log('❌ Erro ao carregar imagem ${index + 1}: ${imagePath}')">
+                        <div id="status-${index}" class="status loading">Carregando...</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+            log('🧪 Teste de imagens individuais iniciado');
+        }
+        
+        function simulateCadastroPage() {
+            log('🎭 Simulando página de cadastro...');
+            const container = document.getElementById('simulation-results');
+            container.innerHTML = '<div class="status loading">🎭 Simulando página de cadastro...</div>';
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                if (!localData) {
+                    log('❌ Nenhum dado para simular');
+                    container.innerHTML = `
+                        <div class="status error">❌ Nenhum dado para simular</div>
+                    `;
+                    return;
+                }
+                
+                const localPhotos = JSON.parse(localData);
+                log(`📊 Dados do localStorage: ${localPhotos.length} itens`);
+                
+                // Simular agrupamento
+                const groupedDemolitions = groupDemolitionsByTitle(localPhotos);
+                log(`📋 Demolições agrupadas: ${Object.keys(groupedDemolitions).length} grupos`);
+                
+                // Simular renderização
+                let html = '<h3>🎯 Simulação de Renderização:</h3>';
+                html += '<div class="image-test">';
+                
+                Object.values(groupedDemolitions).forEach((group, index) => {
+                    const demolition = group.demolitions[0];
+                    log(`🏗️ Processando grupo ${index + 1}: ${demolition.title}`);
+                    
+                    const imageSrc = getDemolitionImage(demolition);
+                    log(`🖼️ Imagem selecionada: ${imageSrc}`);
+                    
+                    html += `
+                        <div class="image-item">
+                            <h4>${demolition.title}</h4>
+                            <p><strong>Categoria:</strong> ${demolition.category}</p>
+                            <p><strong>Localização:</strong> ${demolition.location}</p>
+                            <p><strong>Imagens:</strong> ${group.totalImages}</p>
+                            <img src="${imageSrc}" 
+                                 alt="${demolition.title}"
+                                 onload="log('✅ Imagem do grupo carregada: ${imageSrc}')"
+                                 onerror="log('❌ Erro ao carregar imagem do grupo: ${imageSrc}')">
+                            <div class="status loading">Testando: ${imageSrc}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+                log('🎭 Simulação de página de cadastro concluída');
+                
+            } catch (error) {
+                log(`❌ Erro na simulação: ${error.message}`);
+                container.innerHTML = `
+                    <div class="status error">❌ Erro na simulação: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function testImagePaths() {
+            log('🖼️ Testando caminhos de imagem...');
+            const testPaths = [
+                'assets/images/construction-site-1.jpg',
+                'assets/images/construction-site-2.jpg',
+                'assets/images/construction-site-3.jpg',
+                'assets/images/construction-site-4.jpg',
+                'assets/images/construction-site-5.jpg',
+                'assets/images/construction-site-6.jpg'
+            ];
+            
+            testPaths.forEach((path, index) => {
+                const img = new Image();
+                img.onload = () => log(`✅ Caminho ${index + 1} válido: ${path}`);
+                img.onerror = () => log(`❌ Caminho ${index + 1} inválido: ${path}`);
+                img.src = path;
+            });
+        }
+        
+        function addTestData() {
+            log('➕ Adicionando dados de teste...');
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                const testPhoto = {
+                    id: `debug-test-${Date.now()}`,
+                    title: `Debug Test ${Date.now()}`,
+                    category: 'residential',
+                    description: `Descrição do teste de debug ${Date.now()}`,
+                    location: `Localização Debug ${Date.now()}`,
+                    date: new Date().toISOString().split('T')[0],
+                    images: [
+                        'assets/images/construction-site-1.jpg',
+                        'assets/images/construction-site-2.jpg'
+                    ]
+                };
+                
+                photos.unshift(testPhoto);
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                log(`✅ Dados de teste adicionados! Total: ${photos.length}`);
+                checkLocalStorage();
+            } catch (error) {
+                log(`❌ Erro ao adicionar dados: ${error.message}`);
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja limpar TODOS os dados?')) {
+                localStorage.removeItem('galleryPhotos');
+                log('🗑️ Todos os dados foram limpos!');
+                checkLocalStorage();
+            }
+        }
+        
+        // Função para agrupar demolições por título (mesma da página principal)
+        function groupDemolitionsByTitle(demolitions) {
+            const groups = {};
+            
+            demolitions.forEach(demolition => {
+                const title = demolition.title;
+                
+                if (!groups[title]) {
+                    groups[title] = {
+                        title: title,
+                        demolitions: [],
+                        totalImages: 0
+                    };
+                }
+                
+                groups[title].demolitions.push(demolition);
+                
+                // Contar imagens
+                if (demolition.images && demolition.images.length > 0) {
+                    groups[title].totalImages += demolition.images.length;
+                } else {
+                    groups[title].totalImages += 1; // Imagem padrão
+                }
+            });
+            
+            return groups;
+        }
+        
+        // Função para obter imagem da demolição (mesma da página principal)
+        function getDemolitionImage(demolition) {
+            log(`🔍 Verificando imagem para demolição: ${demolition.title}`);
+            log(`📸 Imagens disponíveis: ${JSON.stringify(demolition.images)}`);
+            log(`📋 Tipo de demolition.images: ${typeof demolition.images}`);
+            log(`📋 É array? ${Array.isArray(demolition.images)}`);
+            
+            if (demolition.images && demolition.images.length > 0) {
+                const firstImage = demolition.images[0];
+                log(`🖼️ Primeira imagem: ${JSON.stringify(firstImage)}`);
+                log(`📋 Tipo da primeira imagem: ${typeof firstImage}`);
+                
+                // Se for uma string (caminho da imagem)
+                if (typeof firstImage === 'string') {
+                    if (firstImage.startsWith('http')) {
+                        log(`✅ Imagem URL completa: ${firstImage}`);
+                        return firstImage;
+                    } else {
+                        log(`✅ Imagem local: ${firstImage}`);
+                        return firstImage;
+                    }
+                }
+                // Se for um objeto com propriedades
+                else if (typeof firstImage === 'object' && firstImage.data) {
+                    log(`✅ Imagem objeto com data: ${firstImage.data}`);
+                    return firstImage.data;
+                }
+                // Se for um objeto com url
+                else if (typeof firstImage === 'object' && firstImage.url) {
+                    log(`✅ Imagem objeto com url: ${firstImage.url}`);
+                    return firstImage.url;
+                }
+            }
+            
+            log('⚠️ Usando imagem padrão');
+            return 'assets/images/construction-site-1.jpg';
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🚀 Página de debug inicializada');
+            checkLocalStorage();
+        });
+    </script>
+</body>
+</html>

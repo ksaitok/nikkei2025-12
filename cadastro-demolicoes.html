@@ -509,26 +509,49 @@
             try {
                 let stats;
                 
-                // Tentar carregar da API primeiro
-                if (window.demolitionAPI) {
+                // PRIORIDADE 1: Calcular estatísticas do localStorage
+                const localData = localStorage.getItem('galleryPhotos');
+                if (localData) {
                     try {
-                        stats = await window.demolitionAPI.getStatistics();
+                        const localPhotos = JSON.parse(localData);
                         stats = {
-                            total: stats.total_demolitions || 0,
-                            residential: stats.residential_count || 0,
-                            commercial: stats.commercial_count || 0,
-                            industrial: stats.industrial_count || 0,
-                            fireDamage: stats.fire_damage_count || 0
+                            total: localPhotos.length,
+                            residential: localPhotos.filter(p => p.category === 'residential').length,
+                            commercial: localPhotos.filter(p => p.category === 'commercial').length,
+                            industrial: localPhotos.filter(p => p.category === 'industrial').length,
+                            fireDamage: localPhotos.filter(p => p.category === 'fire-damage').length
                         };
+                        console.log('✅ Estatísticas calculadas do localStorage:', stats);
                     } catch (error) {
-                        console.log('Erro ao carregar da API, usando fallback:', error);
-                        // Fallback para IndexedDB
-                        if (window.demolitionDB) {
-                            stats = await window.demolitionDB.getStatistics();
-                        }
+                        console.error('Erro ao calcular estatísticas do localStorage:', error);
                     }
-                } else if (window.demolitionDB) {
-                    stats = await window.demolitionDB.getStatistics();
+                }
+                
+                // PRIORIDADE 2: Tentar carregar da API (se localStorage estiver vazio)
+                if (!stats && window.demolitionAPI) {
+                    try {
+                        const apiStats = await window.demolitionAPI.getStatistics();
+                        stats = {
+                            total: apiStats.total_demolitions || 0,
+                            residential: apiStats.residential_count || 0,
+                            commercial: apiStats.commercial_count || 0,
+                            industrial: apiStats.industrial_count || 0,
+                            fireDamage: apiStats.fire_damage_count || 0
+                        };
+                        console.log('✅ Estatísticas carregadas da API:', stats);
+                    } catch (error) {
+                        console.log('Erro ao carregar da API:', error);
+                    }
+                }
+                
+                // PRIORIDADE 3: Fallback para IndexedDB
+                if (!stats && window.demolitionDB) {
+                    try {
+                        stats = await window.demolitionDB.getStatistics();
+                        console.log('✅ Estatísticas carregadas do IndexedDB:', stats);
+                    } catch (error) {
+                        console.log('Erro ao carregar do IndexedDB:', error);
+                    }
                 }
                 
                 if (stats) {
@@ -569,31 +592,10 @@
 
                 let demolitions = [];
 
-                // Tentar carregar da API primeiro
-                if (window.demolitionAPI) {
+                // PRIORIDADE 1: Carregar do localStorage (dados do admin)
+                const localData = localStorage.getItem('galleryPhotos');
+                if (localData) {
                     try {
-                        const response = await window.demolitionAPI.getDemolitions();
-                        if (response && response.demolitions) {
-                            demolitions = response.demolitions;
-                        }
-                    } catch (error) {
-                        console.log('Erro ao carregar da API, usando fallback:', error);
-                    }
-                }
-
-                // Fallback para IndexedDB
-                if (demolitions.length === 0 && window.demolitionDB) {
-                    try {
-                        demolitions = await window.demolitionDB.getAllDemolitions();
-                    } catch (error) {
-                        console.log('Erro ao carregar do IndexedDB:', error);
-                    }
-                }
-
-                // Fallback para localStorage
-                if (demolitions.length === 0) {
-                    const localData = localStorage.getItem('galleryPhotos');
-                    if (localData) {
                         const localPhotos = JSON.parse(localData);
                         // Converter dados do localStorage para formato da API
                         demolitions = localPhotos.map(photo => ({
@@ -606,12 +608,41 @@
                             images: photo.images || [],
                             image_count: photo.images ? photo.images.length : 0
                         }));
-                        console.log('Dados carregados do localStorage:', demolitions.length, 'demolições');
+                        console.log('✅ Dados carregados do localStorage:', demolitions.length, 'demolições');
+                    } catch (error) {
+                        console.error('Erro ao processar dados do localStorage:', error);
+                    }
+                }
+
+                // PRIORIDADE 2: Tentar carregar da API (se localStorage estiver vazio)
+                if (demolitions.length === 0 && window.demolitionAPI) {
+                    try {
+                        const response = await window.demolitionAPI.getDemolitions();
+                        if (response && response.demolitions) {
+                            demolitions = response.demolitions;
+                            console.log('✅ Dados carregados da API:', demolitions.length, 'demolições');
+                        }
+                    } catch (error) {
+                        console.log('Erro ao carregar da API:', error);
+                    }
+                }
+
+                // PRIORIDADE 3: Fallback para IndexedDB
+                if (demolitions.length === 0 && window.demolitionDB) {
+                    try {
+                        demolitions = await window.demolitionDB.getAllDemolitions();
+                        console.log('✅ Dados carregados do IndexedDB:', demolitions.length, 'demolições');
+                    } catch (error) {
+                        console.log('Erro ao carregar do IndexedDB:', error);
                     }
                 }
 
                 allDemolitions = demolitions;
                 filteredDemolitions = [...demolitions];
+                
+                console.log('📊 Total de demolições carregadas:', demolitions.length);
+                console.log('📋 Dados finais:', demolitions);
+                
                 renderDemolitions();
                 
             } catch (error) {

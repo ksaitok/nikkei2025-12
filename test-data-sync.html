@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Sincronização de Dados - NKK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online { background: #28a745; }
+        .status-offline { background: #dc3545; }
+        .status-checking { background: #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Teste de Sincronização de Dados - Sistema NKK</h1>
+    
+    <div class="test-section">
+        <h2>📊 Status dos Dados</h2>
+        <div id="data-status">
+            <div class="test-result info">Verificando dados...</div>
+        </div>
+        <button class="btn" onclick="checkDataStatus()">🔄 Verificar Status</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📝 Dados no localStorage</h2>
+        <div id="localStorage-data">
+            <div class="test-result info">Carregando dados do localStorage...</div>
+        </div>
+        <button class="btn" onclick="showLocalStorageData()">📋 Mostrar Dados</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🧪 Teste de Sincronização</h2>
+        <button class="btn" onclick="addTestData()">➕ Adicionar Dados de Teste</button>
+        <button class="btn" onclick="clearTestData()">🗑️ Limpar Dados de Teste</button>
+        <button class="btn" onclick="simulateAdminSave()">💾 Simular Salvamento do Admin</button>
+        <div id="sync-test-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔗 Links de Teste</h2>
+        <p>
+            <a href="http://localhost:8000/admin.html" target="_blank" class="btn">🔐 Painel Admin</a>
+            <a href="http://localhost:8000/cadastro-demolicoes.html" target="_blank" class="btn">📋 Cadastro de Demolições</a>
+        </p>
+    </div>
+
+    <script>
+        let testDataCount = 0;
+        
+        // Verificar status dos dados
+        function checkDataStatus() {
+            const statusDiv = document.getElementById('data-status');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                if (localData) {
+                    const photos = JSON.parse(localData);
+                    statusDiv.innerHTML = `
+                        <div class="test-result success">
+                            <span class="status-indicator status-online"></span>
+                            ✅ Dados encontrados: ${photos.length} demolições
+                        </div>
+                        <div class="test-result info">
+                            📅 Última atualização: ${new Date().toLocaleString()}
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="test-result error">
+                            <span class="status-indicator status-offline"></span>
+                            ❌ Nenhum dado encontrado no localStorage
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="test-result error">
+                        <span class="status-indicator status-offline"></span>
+                        ❌ Erro ao verificar dados: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        // Mostrar dados do localStorage
+        function showLocalStorageData() {
+            const dataDiv = document.getElementById('localStorage-data');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                if (localData) {
+                    const photos = JSON.parse(localData);
+                    dataDiv.innerHTML = `
+                        <div class="test-result success">✅ Dados carregados com sucesso</div>
+                        <div class="data-display">${JSON.stringify(photos, null, 2)}</div>
+                    `;
+                } else {
+                    dataDiv.innerHTML = `
+                        <div class="test-result error">❌ Nenhum dado encontrado</div>
+                    `;
+                }
+            } catch (error) {
+                dataDiv.innerHTML = `
+                    <div class="test-result error">❌ Erro ao carregar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Adicionar dados de teste
+        function addTestData() {
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                testDataCount++;
+                const testPhoto = {
+                    id: `test-${Date.now()}`,
+                    title: `Teste de Demolição ${testDataCount}`,
+                    category: 'residential',
+                    description: `Descrição do teste ${testDataCount}`,
+                    location: `Localização Teste ${testDataCount}`,
+                    date: new Date().toISOString().split('T')[0],
+                    image: 'assets/images/construction-site-1.jpg',
+                    images: ['assets/images/construction-site-1.jpg']
+                };
+                
+                photos.unshift(testPhoto);
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                document.getElementById('sync-test-result').innerHTML = `
+                    <div class="test-result success">✅ Dados de teste adicionados com sucesso!</div>
+                `;
+                
+                checkDataStatus();
+            } catch (error) {
+                document.getElementById('sync-test-result').innerHTML = `
+                    <div class="test-result error">❌ Erro ao adicionar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Limpar dados de teste
+        function clearTestData() {
+            if (confirm('Tem certeza que deseja limpar todos os dados?')) {
+                localStorage.removeItem('galleryPhotos');
+                testDataCount = 0;
+                
+                document.getElementById('sync-test-result').innerHTML = `
+                    <div class="test-result success">✅ Dados limpos com sucesso!</div>
+                `;
+                
+                checkDataStatus();
+                showLocalStorageData();
+            }
+        }
+        
+        // Simular salvamento do admin
+        function simulateAdminSave() {
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                // Simular salvamento como o admin faz
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento como o admin faz
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                document.getElementById('sync-test-result').innerHTML = `
+                    <div class="test-result success">✅ Simulação de salvamento do admin executada!</div>
+                `;
+                
+                checkDataStatus();
+            } catch (error) {
+                document.getElementById('sync-test-result').innerHTML = `
+                    <div class="test-result error">❌ Erro na simulação: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Listener para eventos de atualização
+        window.addEventListener('galleryUpdated', (e) => {
+            console.log('Evento galleryUpdated recebido:', e.detail);
+            checkDataStatus();
+        });
+        
+        // Listener para mudanças no localStorage
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'galleryPhotos') {
+                console.log('Mudança detectada no localStorage');
+                checkDataStatus();
+            }
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            checkDataStatus();
+            showLocalStorageData();
+        });
+    </script>
+</body>
+</html>

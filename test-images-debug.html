@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug de Imagens - NKK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .image-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .image-item {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background: #f9f9f9;
+        }
+        .image-item img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug de Imagens - Sistema NKK</h1>
+    
+    <div class="debug-section">
+        <h2>📊 Status do localStorage</h2>
+        <div id="localStorage-status">
+            <div class="status loading">Verificando localStorage...</div>
+        </div>
+        <button class="btn" onclick="checkLocalStorage()">🔄 Verificar localStorage</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🖼️ Teste de Imagens Individuais</h2>
+        <div id="image-tests">
+            <div class="status loading">Carregando testes de imagem...</div>
+        </div>
+        <button class="btn" onclick="testAllImages()">🧪 Testar Todas as Imagens</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📋 Dados do localStorage</h2>
+        <div id="localStorage-data">
+            <div class="status loading">Clique em "Verificar localStorage" para ver os dados</div>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🔧 Simulação da Página de Cadastro</h2>
+        <div id="simulation-results">
+            <div class="status loading">Clique em "Simular Página" para testar</div>
+        </div>
+        <button class="btn" onclick="simulateCadastroPage()">🎭 Simular Página de Cadastro</button>
+    </div>
+
+    <script>
+        // Imagens de teste
+        const testImages = [
+            'assets/images/construction-site-1.jpg',
+            'assets/images/construction-site-2.jpg',
+            'assets/images/construction-site-3.jpg',
+            'assets/images/construction-site-4.jpg',
+            'assets/images/construction-site-5.jpg',
+            'assets/images/construction-site-6.jpg'
+        ];
+        
+        function checkLocalStorage() {
+            const statusDiv = document.getElementById('localStorage-status');
+            const dataDiv = document.getElementById('localStorage-data');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                
+                if (localData) {
+                    const photos = JSON.parse(localData);
+                    statusDiv.innerHTML = `
+                        <div class="status success">✅ Dados encontrados: ${photos.length} itens</div>
+                        <div class="status loading">📅 Última verificação: ${new Date().toLocaleString()}</div>
+                    `;
+                    
+                    dataDiv.innerHTML = `
+                        <div class="status success">✅ Dados brutos carregados</div>
+                        <div class="data-display">${JSON.stringify(photos, null, 2)}</div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="status error">❌ Nenhum dado encontrado no localStorage</div>
+                    `;
+                    
+                    dataDiv.innerHTML = `
+                        <div class="status error">❌ localStorage vazio</div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao verificar localStorage: ${error.message}</div>
+                `;
+                dataDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao carregar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function testAllImages() {
+            const container = document.getElementById('image-tests');
+            container.innerHTML = '<div class="status loading">🧪 Testando imagens...</div>';
+            
+            let html = '';
+            testImages.forEach((imagePath, index) => {
+                html += `
+                    <div class="image-item">
+                        <h4>Imagem ${index + 1}</h4>
+                        <p><strong>Caminho:</strong> ${imagePath}</p>
+                        <img src="${imagePath}" 
+                             alt="Teste ${index + 1}" 
+                             onload="markImageSuccess(${index})"
+                             onerror="markImageError(${index})">
+                        <div id="status-${index}" class="status loading">Carregando...</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function markImageSuccess(index) {
+            const statusDiv = document.getElementById(`status-${index}`);
+            if (statusDiv) {
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ Carregada com sucesso';
+            }
+        }
+        
+        function markImageError(index) {
+            const statusDiv = document.getElementById(`status-${index}`);
+            if (statusDiv) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ Erro ao carregar';
+            }
+        }
+        
+        function simulateCadastroPage() {
+            const container = document.getElementById('simulation-results');
+            container.innerHTML = '<div class="status loading">🎭 Simulando página de cadastro...</div>';
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                if (!localData) {
+                    container.innerHTML = `
+                        <div class="status error">❌ Nenhum dado para simular</div>
+                    `;
+                    return;
+                }
+                
+                const localPhotos = JSON.parse(localData);
+                console.log('📊 Dados do localStorage:', localPhotos);
+                
+                // Simular agrupamento
+                const groupedDemolitions = groupDemolitionsByTitle(localPhotos);
+                console.log('📋 Demolições agrupadas:', groupedDemolitions);
+                
+                // Simular renderização
+                let html = '<h3>🎯 Simulação de Renderização:</h3>';
+                html += '<div class="image-test">';
+                
+                Object.values(groupedDemolitions).forEach((group, index) => {
+                    const demolition = group.demolitions[0];
+                    const imageSrc = getDemolitionImage(demolition);
+                    
+                    html += `
+                        <div class="image-item">
+                            <h4>${demolition.title}</h4>
+                            <p><strong>Categoria:</strong> ${demolition.category}</p>
+                            <p><strong>Localização:</strong> ${demolition.location}</p>
+                            <p><strong>Imagens:</strong> ${group.totalImages}</p>
+                            <img src="${imageSrc}" 
+                                 alt="${demolition.title}"
+                                 onload="console.log('✅ Imagem carregada:', '${imageSrc}')"
+                                 onerror="console.log('❌ Erro ao carregar:', '${imageSrc}')">
+                            <div class="status loading">Testando: ${imageSrc}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="status error">❌ Erro na simulação: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Função para agrupar demolições por título (mesma da página principal)
+        function groupDemolitionsByTitle(demolitions) {
+            const groups = {};
+            
+            demolitions.forEach(demolition => {
+                const title = demolition.title;
+                
+                if (!groups[title]) {
+                    groups[title] = {
+                        title: title,
+                        demolitions: [],
+                        totalImages: 0
+                    };
+                }
+                
+                groups[title].demolitions.push(demolition);
+                
+                // Contar imagens
+                if (demolition.images && demolition.images.length > 0) {
+                    groups[title].totalImages += demolition.images.length;
+                } else {
+                    groups[title].totalImages += 1; // Imagem padrão
+                }
+            });
+            
+            return groups;
+        }
+        
+        // Função para obter imagem da demolição (mesma da página principal)
+        function getDemolitionImage(demolition) {
+            console.log('🔍 Verificando imagem para demolição:', demolition.title);
+            console.log('📸 Imagens disponíveis:', demolition.images);
+            
+            if (demolition.images && demolition.images.length > 0) {
+                const firstImage = demolition.images[0];
+                console.log('🖼️ Primeira imagem:', firstImage);
+                
+                // Se for uma string (caminho da imagem)
+                if (typeof firstImage === 'string') {
+                    if (firstImage.startsWith('http')) {
+                        console.log('✅ Imagem URL completa:', firstImage);
+                        return firstImage;
+                    } else {
+                        console.log('✅ Imagem local:', firstImage);
+                        return firstImage;
+                    }
+                }
+                // Se for um objeto com propriedades
+                else if (typeof firstImage === 'object' && firstImage.data) {
+                    console.log('✅ Imagem objeto com data:', firstImage.data);
+                    return firstImage.data;
+                }
+                // Se for um objeto com url
+                else if (typeof firstImage === 'object' && firstImage.url) {
+                    console.log('✅ Imagem objeto com url:', firstImage.url);
+                    return firstImage.url;
+                }
+            }
+            
+            console.log('⚠️ Usando imagem padrão');
+            return 'assets/images/construction-site-1.jpg';
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLocalStorage();
+            testAllImages();
+        });
+    </script>
+</body>
+</html>

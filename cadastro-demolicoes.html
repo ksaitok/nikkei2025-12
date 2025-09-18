@@ -961,10 +961,13 @@
         function getDemolitionImage(demolition) {
             console.log('🔍 Verificando imagem para demolição:', demolition.title);
             console.log('📸 Imagens disponíveis:', demolition.images);
+            console.log('📋 Tipo de demolition.images:', typeof demolition.images);
+            console.log('📋 É array?', Array.isArray(demolition.images));
             
             if (demolition.images && demolition.images.length > 0) {
                 const firstImage = demolition.images[0];
                 console.log('🖼️ Primeira imagem:', firstImage);
+                console.log('📋 Tipo da primeira imagem:', typeof firstImage);
                 
                 // Se for uma string (caminho da imagem)
                 if (typeof firstImage === 'string') {

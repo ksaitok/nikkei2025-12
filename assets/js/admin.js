@@ -22,16 +22,63 @@ class AdminManager {
         this.checkAuthentication();
         this.setupEventListeners();
         this.loadPhotos();
+        this.setupPeriodicAuthCheck();
+    }
+    
+    // Configurar verificação periódica de autenticação
+    setupPeriodicAuthCheck() {
+        // Verificar autenticação a cada 5 minutos
+        setInterval(() => {
+            if (this.isAuthenticated) {
+                const token = localStorage.getItem('adminToken');
+                if (!token || !this.validateToken(token)) {
+                    this.handleLogout();
+                    this.showMessage('Sessão expirada. Faça login novamente.', 'error');
+                }
+            }
+        }, 5 * 60 * 1000); // 5 minutos
     }
     
     // Verificar autenticação
     checkAuthentication() {
         const token = localStorage.getItem('adminToken');
-        if (token) {
+        if (token && this.validateToken(token)) {
             this.isAuthenticated = true;
             this.showAdminPanel();
         } else {
+            // Token inválido ou não existe, limpar e mostrar login
+            localStorage.removeItem('adminToken');
+            this.isAuthenticated = false;
             this.showLoginScreen();
+        }
+    }
+    
+    // Validar token
+    validateToken(token) {
+        try {
+            // Decodificar token (formato: username:timestamp)
+            const decoded = atob(token);
+            const [username, timestamp] = decoded.split(':');
+            
+            // Verificar se o usuário é válido
+            if (username !== this.adminCredentials.username) {
+                return false;
+            }
+            
+            // Verificar se o token não expirou (24 horas)
+            const tokenTime = parseInt(timestamp);
+            const currentTime = Date.now();
+            const tokenAge = currentTime - tokenTime;
+            const maxAge = 24 * 60 * 60 * 1000; // 24 horas em millisegundos
+            
+            if (tokenAge > maxAge) {
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('Erro ao validar token:', error);
+            return false;
         }
     }
     
@@ -174,6 +221,27 @@ class AdminManager {
         this.isAuthenticated = false;
         this.currentUser = null;
         this.showLoginScreen();
+        this.showMessage('Logout realizado com sucesso!', 'success');
+    }
+    
+    // Verificar se usuário está autenticado
+    requireAuthentication() {
+        // Verificar se ainda está autenticado
+        const token = localStorage.getItem('adminToken');
+        if (!token || !this.validateToken(token)) {
+            this.isAuthenticated = false;
+            localStorage.removeItem('adminToken');
+            this.showLoginScreen();
+            this.showMessage('Sessão expirada. Faça login novamente.', 'error');
+            return false;
+        }
+        
+        if (!this.isAuthenticated) {
+            this.showLoginScreen();
+            this.showMessage('Você precisa fazer login para acessar esta funcionalidade!', 'error');
+            return false;
+        }
+        return true;
     }
     
     // Carregar fotos
@@ -584,6 +652,11 @@ class AdminManager {
     
     // Atualizar grupo de demolição
     updateDemolitionGroup(oldTitle) {
+        // Verificar autenticação
+        if (!this.requireAuthentication()) {
+            return;
+        }
+        
         const form = document.getElementById('add-photo-form');
         const formData = new FormData(form);
         
@@ -662,6 +735,11 @@ class AdminManager {
     
     // Excluir grupo de demolição
     deleteDemolitionGroup(title) {
+        // Verificar autenticação
+        if (!this.requireAuthentication()) {
+            return;
+        }
+        
         if (confirm(`Tem certeza que deseja excluir a demolição "${title}" e todas as suas fotos?`)) {
             this.photos = this.photos.filter(photo => photo.title !== title);
             this.savePhotos();
@@ -747,6 +825,11 @@ class AdminManager {
     
     // Lidar com adição de múltiplas fotos
     handleAddPhoto() {
+        // Verificar autenticação
+        if (!this.requireAuthentication()) {
+            return;
+        }
+        
         const form = document.getElementById('add-photo-form');
         const formData = new FormData(form);
         

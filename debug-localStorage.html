@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug localStorage - NKK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug localStorage - Sistema NKK</h1>
+    
+    <div class="debug-section">
+        <h2>📊 Status do localStorage</h2>
+        <div id="localStorage-status">
+            <div class="status info">Verificando localStorage...</div>
+        </div>
+        <button class="btn" onclick="checkLocalStorage()">🔄 Verificar localStorage</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📋 Dados Brutos (galleryPhotos)</h2>
+        <div id="raw-data">
+            <div class="status info">Clique em "Verificar localStorage" para ver os dados</div>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🏗️ Dados Processados (Formato da Página)</h2>
+        <div id="processed-data">
+            <div class="status info">Clique em "Processar Dados" para ver a conversão</div>
+        </div>
+        <button class="btn" onclick="processData()">⚙️ Processar Dados</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📈 Estatísticas Calculadas</h2>
+        <div id="statistics">
+            <div class="status info">Clique em "Calcular Estatísticas" para ver os números</div>
+        </div>
+        <button class="btn" onclick="calculateStats()">📊 Calcular Estatísticas</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🧪 Teste de Dados</h2>
+        <button class="btn btn-success" onclick="addTestData()">➕ Adicionar Dados de Teste</button>
+        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Limpar Todos os Dados</button>
+        <button class="btn" onclick="simulateAdminSave()">💾 Simular Salvamento do Admin</button>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🔗 Links de Teste</h2>
+        <p>
+            <a href="http://localhost:8000/admin.html" target="_blank" class="btn">🔐 Admin</a>
+            <a href="http://localhost:8000/cadastro-demolicoes.html" target="_blank" class="btn">📋 Cadastro</a>
+            <a href="http://localhost:8000/test-data-sync.html" target="_blank" class="btn">🧪 Teste Sync</a>
+        </p>
+    </div>
+
+    <script>
+        let testCounter = 0;
+        
+        function checkLocalStorage() {
+            const statusDiv = document.getElementById('localStorage-status');
+            const rawDataDiv = document.getElementById('raw-data');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                
+                if (localData) {
+                    const photos = JSON.parse(localData);
+                    statusDiv.innerHTML = `
+                        <div class="status success">✅ Dados encontrados: ${photos.length} itens</div>
+                        <div class="status info">📅 Última verificação: ${new Date().toLocaleString()}</div>
+                    `;
+                    
+                    rawDataDiv.innerHTML = `
+                        <div class="status success">✅ Dados brutos carregados</div>
+                        <div class="data-display">${JSON.stringify(photos, null, 2)}</div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="status error">❌ Nenhum dado encontrado no localStorage</div>
+                    `;
+                    
+                    rawDataDiv.innerHTML = `
+                        <div class="status error">❌ localStorage vazio</div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao verificar localStorage: ${error.message}</div>
+                `;
+                rawDataDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao carregar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function processData() {
+            const processedDiv = document.getElementById('processed-data');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                if (!localData) {
+                    processedDiv.innerHTML = `
+                        <div class="status error">❌ Nenhum dado para processar</div>
+                    `;
+                    return;
+                }
+                
+                const localPhotos = JSON.parse(localData);
+                const processedPhotos = localPhotos.map(photo => ({
+                    id: photo.id || Date.now() + Math.random(),
+                    title: photo.title,
+                    category: photo.category,
+                    description: photo.description,
+                    location: photo.location,
+                    date: photo.date,
+                    images: photo.images || [],
+                    image_count: photo.images ? photo.images.length : 0
+                }));
+                
+                processedDiv.innerHTML = `
+                    <div class="status success">✅ Dados processados: ${processedPhotos.length} demolições</div>
+                    <div class="data-display">${JSON.stringify(processedPhotos, null, 2)}</div>
+                `;
+            } catch (error) {
+                processedDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao processar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function calculateStats() {
+            const statsDiv = document.getElementById('statistics');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                if (!localData) {
+                    statsDiv.innerHTML = `
+                        <div class="status error">❌ Nenhum dado para calcular estatísticas</div>
+                    `;
+                    return;
+                }
+                
+                const localPhotos = JSON.parse(localData);
+                const stats = {
+                    total: localPhotos.length,
+                    residential: localPhotos.filter(p => p.category === 'residential').length,
+                    commercial: localPhotos.filter(p => p.category === 'commercial').length,
+                    industrial: localPhotos.filter(p => p.category === 'industrial').length,
+                    fireDamage: localPhotos.filter(p => p.category === 'fire-damage').length
+                };
+                
+                statsDiv.innerHTML = `
+                    <div class="status success">✅ Estatísticas calculadas</div>
+                    <div class="data-display">${JSON.stringify(stats, null, 2)}</div>
+                `;
+            } catch (error) {
+                statsDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao calcular estatísticas: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function addTestData() {
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                testCounter++;
+                const testPhoto = {
+                    id: `debug-test-${Date.now()}`,
+                    title: `Debug Test ${testCounter}`,
+                    category: 'residential',
+                    description: `Descrição do teste de debug ${testCounter}`,
+                    location: `Localização Debug ${testCounter}`,
+                    date: new Date().toISOString().split('T')[0],
+                    image: 'assets/images/construction-site-1.jpg',
+                    images: ['assets/images/construction-site-1.jpg']
+                };
+                
+                photos.unshift(testPhoto);
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                document.getElementById('test-results').innerHTML = `
+                    <div class="status success">✅ Dados de teste adicionados! Total: ${photos.length}</div>
+                `;
+                
+                checkLocalStorage();
+            } catch (error) {
+                document.getElementById('test-results').innerHTML = `
+                    <div class="status error">❌ Erro ao adicionar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja limpar TODOS os dados?')) {
+                localStorage.removeItem('galleryPhotos');
+                testCounter = 0;
+                
+                document.getElementById('test-results').innerHTML = `
+                    <div class="status success">✅ Todos os dados foram limpos!</div>
+                `;
+                
+                checkLocalStorage();
+            }
+        }
+        
+        function simulateAdminSave() {
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                // Simular salvamento como o admin faz
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento como o admin faz
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                document.getElementById('test-results').innerHTML = `
+                    <div class="status success">✅ Simulação de salvamento do admin executada!</div>
+                `;
+                
+                checkLocalStorage();
+            } catch (error) {
+                document.getElementById('test-results').innerHTML = `
+                    <div class="status error">❌ Erro na simulação: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Listener para eventos
+        window.addEventListener('galleryUpdated', (e) => {
+            console.log('Evento galleryUpdated recebido:', e.detail);
+            checkLocalStorage();
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLocalStorage();
+        });
+    </script>
+</body>
+</html>

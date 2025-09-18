@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Dados do Admin - NKK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover { background: #0056b3; }
+        .btn-success { background: #28a745; }
+        .btn-danger { background: #dc3545; }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .data-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+        }
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .image-item {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background: #f9f9f9;
+        }
+        .image-item img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Dados do Admin - Sistema NKK</h1>
+    
+    <div class="debug-section">
+        <h2>📊 Status Atual do localStorage</h2>
+        <div id="current-status">
+            <div class="status info">Verificando dados atuais...</div>
+        </div>
+        <button class="btn" onclick="checkCurrentData()">🔄 Verificar Dados Atuais</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>➕ Adicionar Dados de Teste</h2>
+        <p>Clique nos botões abaixo para adicionar diferentes tipos de dados de teste:</p>
+        <button class="btn btn-success" onclick="addSingleImageData()">📷 Dados com 1 Imagem</button>
+        <button class="btn btn-success" onclick="addMultipleImagesData()">📸 Dados com Múltiplas Imagens</button>
+        <button class="btn btn-success" onclick="addMixedData()">🎭 Dados Mistos</button>
+        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Limpar Todos os Dados</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🖼️ Visualização das Imagens</h2>
+        <div id="image-preview">
+            <div class="status info">Clique em "Verificar Dados Atuais" para ver as imagens</div>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📋 Dados Brutos do localStorage</h2>
+        <div id="raw-data">
+            <div class="status info">Clique em "Verificar Dados Atuais" para ver os dados</div>
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🔗 Links de Teste</h2>
+        <p>
+            <a href="http://localhost:8000/admin.html" target="_blank" class="btn">🔐 Admin</a>
+            <a href="http://localhost:8000/cadastro-demolicoes.html" target="_blank" class="btn">📋 Cadastro</a>
+            <a href="http://localhost:8000/test-images-debug.html" target="_blank" class="btn">🔍 Debug de Imagens</a>
+        </p>
+    </div>
+
+    <script>
+        let testCounter = 0;
+        
+        function checkCurrentData() {
+            const statusDiv = document.getElementById('current-status');
+            const imageDiv = document.getElementById('image-preview');
+            const rawDiv = document.getElementById('raw-data');
+            
+            try {
+                const localData = localStorage.getItem('galleryPhotos');
+                
+                if (localData) {
+                    const photos = JSON.parse(localData);
+                    statusDiv.innerHTML = `
+                        <div class="status success">✅ Dados encontrados: ${photos.length} itens</div>
+                        <div class="status info">📅 Última verificação: ${new Date().toLocaleString()}</div>
+                    `;
+                    
+                    // Mostrar imagens
+                    let imageHtml = '<h3>🖼️ Imagens Carregadas:</h3><div class="image-preview">';
+                    photos.forEach((photo, index) => {
+                        if (photo.images && photo.images.length > 0) {
+                            photo.images.forEach((image, imgIndex) => {
+                                const imageSrc = typeof image === 'string' ? image : (image.data || image.url);
+                                imageHtml += `
+                                    <div class="image-item">
+                                        <h4>${photo.title} - Imagem ${imgIndex + 1}</h4>
+                                        <img src="${imageSrc}" alt="${photo.title}" 
+                                             onload="console.log('✅ Imagem carregada:', '${imageSrc}')"
+                                             onerror="console.log('❌ Erro ao carregar:', '${imageSrc}')">
+                                        <p><strong>Caminho:</strong> ${imageSrc}</p>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            imageHtml += `
+                                <div class="image-item">
+                                    <h4>${photo.title} - Sem Imagens</h4>
+                                    <p>❌ Nenhuma imagem encontrada</p>
+                                </div>
+                            `;
+                        }
+                    });
+                    imageHtml += '</div>';
+                    imageDiv.innerHTML = imageHtml;
+                    
+                    // Mostrar dados brutos
+                    rawDiv.innerHTML = `
+                        <div class="status success">✅ Dados brutos carregados</div>
+                        <div class="data-display">${JSON.stringify(photos, null, 2)}</div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="status error">❌ Nenhum dado encontrado no localStorage</div>
+                    `;
+                    imageDiv.innerHTML = `
+                        <div class="status error">❌ Nenhuma imagem para mostrar</div>
+                    `;
+                    rawDiv.innerHTML = `
+                        <div class="status error">❌ localStorage vazio</div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status error">❌ Erro ao verificar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function addSingleImageData() {
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                testCounter++;
+                const testPhoto = {
+                    id: `single-test-${Date.now()}`,
+                    title: `Demolição Residencial ${testCounter}`,
+                    category: 'residential',
+                    description: `Descrição da demolição residencial ${testCounter}`,
+                    location: `Rua das Flores, ${testCounter}00`,
+                    date: new Date().toISOString().split('T')[0],
+                    images: [`assets/images/construction-site-${(testCounter % 6) + 1}.jpg`]
+                };
+                
+                photos.unshift(testPhoto);
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                document.getElementById('current-status').innerHTML = `
+                    <div class="status success">✅ Dados com 1 imagem adicionados! Total: ${photos.length}</div>
+                `;
+                
+                checkCurrentData();
+            } catch (error) {
+                document.getElementById('current-status').innerHTML = `
+                    <div class="status error">❌ Erro ao adicionar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function addMultipleImagesData() {
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                testCounter++;
+                const testPhoto = {
+                    id: `multiple-test-${Date.now()}`,
+                    title: `Demolição Comercial ${testCounter}`,
+                    category: 'commercial',
+                    description: `Descrição da demolição comercial ${testCounter} com múltiplas imagens`,
+                    location: `Avenida Comercial, ${testCounter}00`,
+                    date: new Date().toISOString().split('T')[0],
+                    images: [
+                        `assets/images/construction-site-${(testCounter % 6) + 1}.jpg`,
+                        `assets/images/construction-site-${((testCounter + 1) % 6) + 1}.jpg`,
+                        `assets/images/construction-site-${((testCounter + 2) % 6) + 1}.jpg`
+                    ]
+                };
+                
+                photos.unshift(testPhoto);
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                document.getElementById('current-status').innerHTML = `
+                    <div class="status success">✅ Dados com múltiplas imagens adicionados! Total: ${photos.length}</div>
+                `;
+                
+                checkCurrentData();
+            } catch (error) {
+                document.getElementById('current-status').innerHTML = `
+                    <div class="status error">❌ Erro ao adicionar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function addMixedData() {
+            try {
+                const existingData = localStorage.getItem('galleryPhotos');
+                let photos = existingData ? JSON.parse(existingData) : [];
+                
+                testCounter++;
+                const testPhoto = {
+                    id: `mixed-test-${Date.now()}`,
+                    title: `Demolição Industrial ${testCounter}`,
+                    category: 'industrial',
+                    description: `Descrição da demolição industrial ${testCounter} com dados mistos`,
+                    location: `Zona Industrial, ${testCounter}00`,
+                    date: new Date().toISOString().split('T')[0],
+                    images: [
+                        {
+                            data: `assets/images/construction-site-${(testCounter % 6) + 1}.jpg`,
+                            url: `assets/images/construction-site-${(testCounter % 6) + 1}.jpg`
+                        },
+                        `assets/images/construction-site-${((testCounter + 1) % 6) + 1}.jpg`
+                    ]
+                };
+                
+                photos.unshift(testPhoto);
+                localStorage.setItem('galleryPhotos', JSON.stringify(photos));
+                
+                // Disparar evento
+                window.dispatchEvent(new CustomEvent('galleryUpdated', {
+                    detail: { count: photos.length }
+                }));
+                
+                document.getElementById('current-status').innerHTML = `
+                    <div class="status success">✅ Dados mistos adicionados! Total: ${photos.length}</div>
+                `;
+                
+                checkCurrentData();
+            } catch (error) {
+                document.getElementById('current-status').innerHTML = `
+                    <div class="status error">❌ Erro ao adicionar dados: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja limpar TODOS os dados?')) {
+                localStorage.removeItem('galleryPhotos');
+                testCounter = 0;
+                
+                document.getElementById('current-status').innerHTML = `
+                    <div class="status success">✅ Todos os dados foram limpos!</div>
+                `;
+                
+                checkCurrentData();
+            }
+        }
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            checkCurrentData();
+        });
+    </script>
+</body>
+</html>

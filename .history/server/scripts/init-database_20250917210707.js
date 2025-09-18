@@ -36,51 +36,49 @@ function initializeDatabase() {
         } else {
             console.log('✅ Tabela demolitions criada');
         }
-        
-        // Criar tabela de imagens
-        db.run(`
-            CREATE TABLE IF NOT EXISTS demolition_images (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                demolition_id INTEGER NOT NULL,
-                filename TEXT NOT NULL,
-                original_name TEXT NOT NULL,
-                file_size INTEGER NOT NULL,
-                mime_type TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (demolition_id) REFERENCES demolitions (id) ON DELETE CASCADE
-            )
-        `, (err) => {
-            if (err) {
-                console.error('❌ Erro ao criar tabela demolition_images:', err);
-            } else {
-                console.log('✅ Tabela demolition_images criada');
-            }
-            
-            // Criar tabela de estatísticas
-            db.run(`
-                CREATE TABLE IF NOT EXISTS statistics (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    total_demolitions INTEGER DEFAULT 0,
-                    residential_count INTEGER DEFAULT 0,
-                    commercial_count INTEGER DEFAULT 0,
-                    industrial_count INTEGER DEFAULT 0,
-                    fire_damage_count INTEGER DEFAULT 0,
-                    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            `, (err) => {
-                if (err) {
-                    console.error('❌ Erro ao criar tabela statistics:', err);
-                } else {
-                    console.log('✅ Tabela statistics criada');
-                }
-                
-                // Aguardar um pouco para as tabelas serem criadas
-                setTimeout(() => {
-                    insertSampleData();
-                }, 1000);
-            });
-        });
     });
+
+    // Criar tabela de imagens
+    db.run(`
+        CREATE TABLE IF NOT EXISTS demolition_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            demolition_id INTEGER NOT NULL,
+            filename TEXT NOT NULL,
+            original_name TEXT NOT NULL,
+            file_size INTEGER NOT NULL,
+            mime_type TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (demolition_id) REFERENCES demolitions (id) ON DELETE CASCADE
+        )
+    `, (err) => {
+        if (err) {
+            console.error('❌ Erro ao criar tabela demolition_images:', err);
+        } else {
+            console.log('✅ Tabela demolition_images criada');
+        }
+    });
+
+    // Criar tabela de estatísticas
+    db.run(`
+        CREATE TABLE IF NOT EXISTS statistics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            total_demolitions INTEGER DEFAULT 0,
+            residential_count INTEGER DEFAULT 0,
+            commercial_count INTEGER DEFAULT 0,
+            industrial_count INTEGER DEFAULT 0,
+            fire_damage_count INTEGER DEFAULT 0,
+            last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `, (err) => {
+        if (err) {
+            console.error('❌ Erro ao criar tabela statistics:', err);
+        } else {
+            console.log('✅ Tabela statistics criada');
+        }
+    });
+
+    // Inserir dados de exemplo
+    insertSampleData();
 }
 
 function insertSampleData() {

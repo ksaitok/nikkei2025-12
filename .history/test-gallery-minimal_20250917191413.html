@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Mínimo da Galeria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .gallery-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 2px solid #ddd;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .gallery-info {
+            padding: 10px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste Mínimo da Galeria</h1>
+    
+    <div class="test-section">
+        <h2>📊 Status</h2>
+        <div id="status-container"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎛️ Controles</h2>
+        <button onclick="testBasicRendering()">Teste Básico</button>
+        <button onclick="testWithData()">Teste com Dados</button>
+        <button onclick="testWithImages()">Teste com Imagens</button>
+        <button onclick="clearGallery()">Limpar</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🖼️ Galeria</h2>
+        <div id="gallery-grid" class="gallery-grid"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📝 Logs</h2>
+        <div id="logs" style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.marginBottom = '5px';
+            logEntry.style.color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#6c757d';
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logs.appendChild(logEntry);
+            logs.scrollTop = logs.scrollHeight;
+            console.log(message);
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const container = document.getElementById('status-container');
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            container.appendChild(status);
+        }
+        
+        function clearGallery() {
+            document.getElementById('gallery-grid').innerHTML = '';
+            document.getElementById('status-container').innerHTML = '';
+            document.getElementById('logs').innerHTML = '';
+            log('Galeria limpa');
+        }
+        
+        function testBasicRendering() {
+            log('Testando renderização básica...');
+            const galleryGrid = document.getElementById('gallery-grid');
+            
+            galleryGrid.innerHTML = `
+                <div class="gallery-item">
+                    <div style="height: 150px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                        Teste Básico
+                    </div>
+                    <div class="gallery-info">
+                        <h4>Item de Teste</h4>
+                        <p>Este é um teste básico de renderização</p>
+                    </div>
+                </div>
+            `;
+            
+            log('✅ Renderização básica funcionando', 'success');
+            updateStatus('Renderização básica: ✅ OK', 'success');
+        }
+        
+        function testWithData() {
+            log('Testando com dados...');
+            const galleryGrid = document.getElementById('gallery-grid');
+            
+            const testData = [
+                {
+                    id: 1,
+                    title: 'Teste 1',
+                    description: 'Descrição do teste 1',
+                    image: 'assets/images/DemolicaoMadeira.jpg'
+                },
+                {
+                    id: 2,
+                    title: 'Teste 2',
+                    description: 'Descrição do teste 2',
+                    image: 'assets/images/DemolicaoRC.jpg'
+                }
+            ];
+            
+            galleryGrid.innerHTML = '';
+            
+            testData.forEach((item, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <div style="height: 150px; background: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                        ${item.title}
+                    </div>
+                    <div class="gallery-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                        <small>Imagem: ${item.image}</small>
+                    </div>
+                `;
+                galleryGrid.appendChild(galleryItem);
+            });
+            
+            log(`✅ ${testData.length} itens renderizados com dados`, 'success');
+            updateStatus(`Dados: ✅ ${testData.length} itens renderizados`, 'success');
+        }
+        
+        function testWithImages() {
+            log('Testando com imagens reais...');
+            const galleryGrid = document.getElementById('gallery-grid');
+            
+            const testData = [
+                {
+                    id: 1,
+                    title: 'Demolição Madeira',
+                    description: 'Teste de imagem de demolição de madeira',
+                    image: 'assets/images/DemolicaoMadeira.jpg'
+                },
+                {
+                    id: 2,
+                    title: 'Demolição Concreto',
+                    description: 'Teste de imagem de demolição de concreto',
+                    image: 'assets/images/DemolicaoRC.jpg'
+                },
+                {
+                    id: 3,
+                    title: 'Demolição Ferro',
+                    description: 'Teste de imagem de demolição de ferro',
+                    image: 'assets/images/DemolicaoFerro.jpg'
+                }
+            ];
+            
+            galleryGrid.innerHTML = '';
+            
+            testData.forEach((item, index) => {
+                log(`Criando item ${index + 1}: ${item.title}`);
+                
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; console.log('Erro ao carregar: ${item.image}');"
+                         onload="console.log('Imagem carregada: ${item.image}');">
+                    <div style="display: none; height: 150px; background: #f8d7da; align-items: center; justify-content: center; color: #721c24;">
+                        ❌ Erro ao carregar
+                    </div>
+                    <div class="gallery-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                        <small>${item.image}</small>
+                    </div>
+                `;
+                galleryGrid.appendChild(galleryItem);
+            });
+            
+            log(`✅ ${testData.length} itens com imagens criados`, 'success');
+            updateStatus(`Imagens: ✅ ${testData.length} itens criados`, 'success');
+        }
+        
+        // Inicializar
+        window.addEventListener('load', () => {
+            log('Página carregada, pronto para testes');
+            updateStatus('Sistema pronto para testes', 'info');
+        });
+    </script>
+</body>
+</html>

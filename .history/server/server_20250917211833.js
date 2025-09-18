@@ -65,7 +65,7 @@ const upload = multer({
 });
 
 // Inicializar banco de dados
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+const db = new sqlite3.Database('./server/database.sqlite', (err) => {
     if (err) {
         console.error('Erro ao conectar com o banco de dados:', err.message);
     } else {

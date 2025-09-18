@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Carregamento de Dados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .data-display {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste de Carregamento de Dados</h1>
+        <p>Esta página testa se os dados estão sendo carregados corretamente no localStorage.</p>
+        
+        <div id="status"></div>
+        <div id="data-display"></div>
+        <div id="gallery-test"></div>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            document.getElementById('status').innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function displayData(data, title) {
+            const dataDiv = document.getElementById('data-display');
+            dataDiv.innerHTML = `
+                <h3>${title}</h3>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+        
+        function testDataLoading() {
+            updateStatus('⏳ Testando carregamento de dados...', 'warning');
+            
+            // Testar localStorage
+            try {
+                const savedPhotos = localStorage.getItem('galleryPhotos');
+                if (savedPhotos) {
+                    const parsed = JSON.parse(savedPhotos);
+                    updateStatus(`✅ Dados encontrados no localStorage: ${parsed.length} itens`, 'success');
+                    displayData(parsed, 'Dados do localStorage');
+                    
+                    // Testar se as imagens dos dados existem
+                    let validImages = 0;
+                    let invalidImages = 0;
+                    
+                    parsed.forEach((item, index) => {
+                        const img = new Image();
+                        img.onload = function() {
+                            validImages++;
+                            if (validImages + invalidImages === parsed.length) {
+                                updateStatus(`✅ Dados OK: ${validImages} imagens válidas, ${invalidImages} inválidas`, 'success');
+                            }
+                        };
+                        img.onerror = function() {
+                            invalidImages++;
+                            console.error('Imagem inválida:', item.image);
+                            if (validImages + invalidImages === parsed.length) {
+                                updateStatus(`⚠️ Dados com problemas: ${validImages} imagens válidas, ${invalidImages} inválidas`, 'warning');
+                            }
+                        };
+                        img.src = item.image;
+                    });
+                    
+                } else {
+                    updateStatus('⚠️ Nenhum dado encontrado no localStorage', 'warning');
+                    
+                    // Criar dados de teste
+                    const testData = [
+                        {
+                            id: 1,
+                            title: 'Demolição Residencial - Casa de Madeira',
+                            description: 'Demolição completa de casa residencial de madeira.',
+                            image: 'assets/images/DemolicaoMadeira.jpg',
+                            category: 'residential',
+                            date: '2024-01-15',
+                            location: 'São Paulo, SP',
+                            photoIndex: 1,
+                            totalPhotos: 1
+                        },
+                        {
+                            id: 2,
+                            title: 'Demolição Comercial - Edifício de Concreto',
+                            description: 'Demolição de edifício comercial de concreto armado.',
+                            image: 'assets/images/DemolicaoRC.jpg',
+                            category: 'commercial',
+                            date: '2024-01-20',
+                            location: 'Rio de Janeiro, RJ',
+                            photoIndex: 1,
+                            totalPhotos: 1
+                        }
+                    ];
+                    
+                    localStorage.setItem('galleryPhotos', JSON.stringify(testData));
+                    updateStatus('✅ Dados de teste criados e salvos no localStorage', 'success');
+                    displayData(testData, 'Dados de teste criados');
+                }
+            } catch (error) {
+                updateStatus(`❌ Erro ao testar dados: ${error.message}`, 'error');
+                console.error('Erro:', error);
+            }
+        }
+        
+        function testGalleryJS() {
+            updateStatus('⏳ Testando JavaScript da galeria...', 'warning');
+            
+            // Verificar se o script da galeria está carregado
+            const script = document.createElement('script');
+            script.src = 'assets/js/galeria.js';
+            script.onload = function() {
+                updateStatus('✅ Script da galeria carregado com sucesso', 'success');
+                
+                // Tentar criar uma instância da galeria
+                try {
+                    if (typeof GalleryManager !== 'undefined') {
+                        updateStatus('✅ Classe GalleryManager disponível', 'success');
+                        
+                        // Testar se consegue carregar dados
+                        const gallery = new GalleryManager();
+                        updateStatus('✅ Instância da galeria criada com sucesso', 'success');
+                        
+                        document.getElementById('gallery-test').innerHTML = `
+                            <div class="status success">
+                                <strong>Teste da Galeria:</strong> Funcionando corretamente<br>
+                                <strong>Itens carregados:</strong> ${gallery.allItems.length}<br>
+                                <strong>Itens filtrados:</strong> ${gallery.filteredItems.length}
+                            </div>
+                        `;
+                    } else {
+                        updateStatus('❌ Classe GalleryManager não encontrada', 'error');
+                    }
+                } catch (error) {
+                    updateStatus(`❌ Erro ao criar galeria: ${error.message}`, 'error');
+                    console.error('Erro na galeria:', error);
+                }
+            };
+            script.onerror = function() {
+                updateStatus('❌ Erro ao carregar script da galeria', 'error');
+            };
+            document.head.appendChild(script);
+        }
+        
+        // Executar testes
+        document.addEventListener('DOMContentLoaded', () => {
+            testDataLoading();
+            setTimeout(testGalleryJS, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 // Centraliza todas as chamadas para o servidor backend
 
 class DemolitionAPI {
-    constructor(baseURL = 'http://localhost:3001/api') {
+    constructor(baseURL = 'http://localhost:3000/api') {
         this.baseURL = baseURL;
     }
 

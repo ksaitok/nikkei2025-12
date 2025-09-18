@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Debug dos Scripts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Teste de Debug dos Scripts</h1>
+        <p>Esta página testa se os scripts da galeria e admin estão sendo carregados e se as classes estão sendo definidas.</p>
+        
+        <div id="status"></div>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            document.getElementById('status').innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function addLog(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        // Capturar erros JavaScript
+        window.addEventListener('error', function(e) {
+            addLog(`❌ ERRO JavaScript: ${e.message} em ${e.filename}:${e.lineno}:${e.colno}`);
+            updateStatus('❌ Erro JavaScript detectado!', 'error');
+        });
+        
+        // Capturar erros de Promise
+        window.addEventListener('unhandledrejection', function(e) {
+            addLog(`❌ ERRO Promise: ${e.reason}`);
+            updateStatus('❌ Erro de Promise detectado!', 'error');
+        });
+        
+        function testGalleryScript() {
+            addLog('⏳ Testando carregamento do script da galeria...');
+            
+            // Testar se o script da galeria está carregado
+            const script = document.createElement('script');
+            script.src = 'assets/js/galeria.js';
+            script.onload = function() {
+                addLog('✅ Script galeria.js carregado com sucesso');
+                
+                // Aguardar um pouco para garantir que o script foi processado
+                setTimeout(() => {
+                    // Verificar se a classe GalleryManager existe
+                    if (typeof GalleryManager !== 'undefined') {
+                        addLog('✅ Classe GalleryManager encontrada');
+                        
+                        // Tentar criar uma instância
+                        try {
+                            const gallery = new GalleryManager();
+                            addLog('✅ Instância da galeria criada com sucesso');
+                            addLog(`📊 Itens carregados: ${gallery.allItems.length}`);
+                        } catch (error) {
+                            addLog(`❌ Erro ao criar instância: ${error.message}`);
+                            addLog(`❌ Stack trace: ${error.stack}`);
+                        }
+                    } else {
+                        addLog('❌ Classe GalleryManager não encontrada');
+                    }
+                }, 100);
+            };
+            script.onerror = function() {
+                addLog('❌ Erro ao carregar script galeria.js');
+            };
+            document.head.appendChild(script);
+        }
+        
+        function testAdminScript() {
+            addLog('⏳ Testando carregamento do script do admin...');
+            
+            // Testar se o script do admin está carregado
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin.js';
+            script.onload = function() {
+                addLog('✅ Script admin.js carregado com sucesso');
+                
+                // Aguardar um pouco para garantir que o script foi processado
+                setTimeout(() => {
+                    // Verificar se a classe AdminManager existe
+                    if (typeof AdminManager !== 'undefined') {
+                        addLog('✅ Classe AdminManager encontrada');
+                        
+                        // Tentar criar uma instância
+                        try {
+                            const admin = new AdminManager();
+                            addLog('✅ Instância do admin criada com sucesso');
+                            addLog(`📊 Fotos carregadas: ${admin.photos.length}`);
+                        } catch (error) {
+                            addLog(`❌ Erro ao criar instância: ${error.message}`);
+                            addLog(`❌ Stack trace: ${error.stack}`);
+                        }
+                    } else {
+                        addLog('❌ Classe AdminManager não encontrada');
+                    }
+                }, 100);
+            };
+            script.onerror = function() {
+                addLog('❌ Erro ao carregar script admin.js');
+            };
+            document.head.appendChild(script);
+        }
+        
+        // Executar testes
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('DOM carregado, iniciando testes...');
+            addLog('🔍 Capturando erros JavaScript...');
+            
+            // Testar scripts sequencialmente
+            testGalleryScript();
+            setTimeout(testAdminScript, 1000);
+        });
+    </script>
+</body>
+</html>

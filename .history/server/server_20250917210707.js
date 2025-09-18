@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 const sharp = require('sharp');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 // Middleware de segurança
 app.use(helmet());
@@ -65,7 +65,7 @@ const upload = multer({
 });
 
 // Inicializar banco de dados
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+const db = new sqlite3.Database('./server/database.sqlite', (err) => {
     if (err) {
         console.error('Erro ao conectar com o banco de dados:', err.message);
     } else {

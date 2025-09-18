@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Demolições - NKK</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .cadastro-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .cadastro-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .cadastro-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .cadastro-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .image-upload-section {
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+        
+        .image-upload-section:hover {
+            border-color: #3498db;
+        }
+        
+        .image-upload-section.dragover {
+            border-color: #3498db;
+            background-color: #ecf0f1;
+        }
+        
+        .image-upload-icon {
+            font-size: 3rem;
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+        
+        .image-upload-text {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .image-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .image-preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .image-preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .image-preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .image-preview-item:hover .image-preview-overlay {
+            opacity: 1;
+        }
+        
+        .image-preview-overlay button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .image-preview-overlay button:hover {
+            background: #c0392b;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .stats-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-logo">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/images/logo/nkk-logo.svg" alt="NKK Nikkei Kaitai Kogyo" class="logo-image">
+                    <span class="logo-text">日系解体工業株式会社</span>
+                </a>
+            </div>
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="galeria-demolicoes.html" class="nav-link">Galeria</a>
+                <a href="admin.html" class="nav-link">Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="cadastro-container">
+            <!-- Header -->
+            <div class="cadastro-header">
+                <h1><i class="fas fa-hammer"></i> Cadastro de Demolições</h1>
+                <p>Registre novas demolições realizadas pela NKK</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-section">
+                <h2><i class="fas fa-chart-bar"></i> Estatísticas</h2>
+                <div class="stats-grid" id="stats-grid">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div id="message-container"></div>
+
+            <!-- Form -->
+            <div class="form-section">
+                <h2><i class="fas fa-edit"></i> Dados da Demolição</h2>
+                <form id="demolition-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="title">Título da Demolição *</label>
+                            <input type="text" id="title" name="title" required 
+                                   placeholder="Ex: Demolição Residencial - Casa de Madeira">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="category">Categoria *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Selecione uma categoria</option>
+                                <option value="residential">Residencial</option>
+                                <option value="commercial">Comercial</option>
+                                <option value="industrial">Industrial</option>
+                                <option value="fire-damage">Pós-Incêndio</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location">Localização *</label>
+                            <input type="text" id="location" name="location" required 
+                                   placeholder="Ex: São Paulo, SP">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date">Data da Demolição *</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Descrição Detalhada *</label>
+                        <textarea id="description" name="description" required 
+                                  placeholder="Descreva os detalhes da demolição, materiais utilizados, equipamentos, etc."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-section">
+                <h2><i class="fas fa-images"></i> Imagens da Demolição</h2>
+                <div class="image-upload-section" id="image-upload-section">
+                    <div class="image-upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="image-upload-text">
+                        <h3>Arraste e solte as imagens aqui</h3>
+                        <p>ou clique para selecionar arquivos</p>
+                        <p><small>Formatos aceitos: JPG, PNG, GIF (máx. 10MB cada)</small></p>
+                    </div>
+                    <input type="file" id="image-input" multiple accept="image/*" style="display: none;">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('image-input').click()">
+                        <i class="fas fa-folder-open"></i> Selecionar Imagens
+                    </button>
+                </div>
+                
+                <div class="image-preview-grid" id="image-preview-grid">
+                    <!-- Image previews will be added here -->
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                    <i class="fas fa-eraser"></i> Limpar Formulário
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveDemolition()">
+                    <i class="fas fa-save"></i> Salvar Demolição
+                </button>
+                <a href="galeria-demolicoes.html" class="btn btn-success">
+                    <i class="fas fa-eye"></i> Ver Galeria
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="assets/js/api-client.js"></script>
+    <script src="assets/js/database.js"></script>
+    <script src="assets/js/language-simple.js"></script>
+    <script>
+        let selectedImages = [];
+        let currentDemolitionId = null;
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadStatistics();
+            setupImageUpload();
+            setDefaultDate();
+        });
+
+        // Carregar estatísticas
+        async function loadStatistics() {
+            try {
+                let stats;
+                
+                // Tentar carregar da API primeiro
+                if (window.demolitionAPI) {
+                    try {
+                        stats = await window.demolitionAPI.getStatistics();
+                        stats = {
+                            total: stats.total_demolitions || 0,
+                            recent: 0, // TODO: implementar cálculo de últimos 30 dias
+                            byCategory: {
+                                residential: stats.residential_count || 0,
+                                commercial: stats.commercial_count || 0,
+                                industrial: stats.industrial_count || 0,
+                                'fire-damage': stats.fire_damage_count || 0
+                            },
+                            byLocation: {} // TODO: implementar contagem por localização
+                        };
+                    } catch (error) {
+                        console.log('Erro ao carregar da API, usando fallback:', error);
+                        // Fallback para IndexedDB
+                        if (window.demolitionDB) {
+                            stats = await window.demolitionDB.getStatistics();
+                        }
+                    }
+                } else if (window.demolitionDB) {
+                    stats = await window.demolitionDB.getStatistics();
+                }
+                
+                if (stats) {
+                    const statsGrid = document.getElementById('stats-grid');
+                    
+                    statsGrid.innerHTML = `
+                        <div class="stat-card">
+                            <h3>Total de Demolições</h3>
+                            <div class="stat-number">${stats.total}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Últimos 30 dias</h3>
+                            <div class="stat-number">${stats.recent}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Por Categoria</h3>
+                            <div class="stat-number">${Object.keys(stats.byCategory).length}</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Localizações</h3>
+                            <div class="stat-number">${Object.keys(stats.byLocation).length}</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        // Configurar upload de imagens
+        function setupImageUpload() {
+            const uploadSection = document.getElementById('image-upload-section');
+            const imageInput = document.getElementById('image-input');
+
+            // Drag and drop
+            uploadSection.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadSection.classList.add('dragover');
+            });
+
+            uploadSection.addEventListener('dragleave', () => {
+                uploadSection.classList.remove('dragover');
+            });
+
+            uploadSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadSection.classList.remove('dragover');
+                handleImageFiles(e.dataTransfer.files);
+            });
+
+            // Click to select
+            uploadSection.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            // File input change
+            imageInput.addEventListener('change', (e) => {
+                handleImageFiles(e.target.files);
+            });
+        }
+
+        // Processar arquivos de imagem
+        function handleImageFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    if (file.size > 10 * 1024 * 1024) { // 10MB
+                        showMessage('Arquivo muito grande: ' + file.name + ' (máx. 10MB)', 'error');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imageData = {
+                            name: file.name,
+                            size: file.size,
+                            data: e.target.result,
+                            file: file
+                        };
+                        selectedImages.push(imageData);
+                        updateImagePreview();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    showMessage('Arquivo não é uma imagem: ' + file.name, 'error');
+                }
+            });
+        }
+
+        // Atualizar preview das imagens
+        function updateImagePreview() {
+            const previewGrid = document.getElementById('image-preview-grid');
+            previewGrid.innerHTML = '';
+
+            selectedImages.forEach((image, index) => {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'image-preview-item';
+                previewItem.innerHTML = `
+                    <img src="${image.data}" alt="${image.name}">
+                    <div class="image-preview-overlay">
+                        <button onclick="removeImage(${index})">
+                            <i class="fas fa-trash"></i> Remover
+                        </button>
+                    </div>
+                `;
+                previewGrid.appendChild(previewItem);
+            });
+        }
+
+        // Remover imagem
+        function removeImage(index) {
+            selectedImages.splice(index, 1);
+            updateImagePreview();
+        }
+
+        // Salvar demolição
+        async function saveDemolition() {
+            const form = document.getElementById('demolition-form');
+            const formData = new FormData(form);
+
+            // Validar dados
+            const title = formData.get('title');
+            const category = formData.get('category');
+            const location = formData.get('location');
+            const date = formData.get('date');
+            const description = formData.get('description');
+
+            if (!title || !category || !location || !date || !description) {
+                showMessage('Por favor, preencha todos os campos obrigatórios', 'error');
+                return;
+            }
+
+            if (selectedImages.length === 0) {
+                showMessage('Por favor, adicione pelo menos uma imagem', 'error');
+                return;
+            }
+
+            try {
+                // Criar objeto da demolição
+                const demolitionData = {
+                    title: title,
+                    category: category,
+                    location: location,
+                    date: date,
+                    description: description,
+                    images: selectedImages.map(img => ({
+                        name: img.name,
+                        size: img.size,
+                        file: img.file,
+                        data: img.data
+                    }))
+                };
+
+                let demolitionId;
+                
+                // Tentar salvar na API primeiro
+                if (window.demolitionAPI) {
+                    try {
+                        const result = await window.demolitionAPI.createDemolition(demolitionData);
+                        demolitionId = result.id;
+                        console.log('Demolição salva na API:', demolitionId);
+                    } catch (error) {
+                        console.log('Erro ao salvar na API, usando fallback:', error);
+                        // Fallback para IndexedDB
+                        if (window.demolitionDB) {
+                            demolitionId = await window.demolitionDB.addDemolition(demolitionData);
+                        }
+                    }
+                } else if (window.demolitionDB) {
+                    demolitionId = await window.demolitionDB.addDemolition(demolitionData);
+                }
+                
+                showMessage('Demolição salva com sucesso!', 'success');
+                clearForm();
+                await loadStatistics();
+                
+            } catch (error) {
+                console.error('Erro ao salvar demolição:', error);
+                showMessage('Erro ao salvar demolição: ' + error.message, 'error');
+            }
+        }
+
+        // Limpar formulário
+        function clearForm() {
+            document.getElementById('demolition-form').reset();
+            selectedImages = [];
+            updateImagePreview();
+            setDefaultDate();
+        }
+
+        // Definir data padrão (hoje)
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        }
+
+        // Mostrar mensagem
+        function showMessage(message, type) {
+            const container = document.getElementById('message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            container.innerHTML = '';
+            container.appendChild(messageDiv);
+            
+            // Remover mensagem após 5 segundos
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

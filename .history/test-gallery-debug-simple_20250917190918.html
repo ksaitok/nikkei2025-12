@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Simples da Galeria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .debug-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .gallery-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .gallery-info {
+            padding: 10px;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Teste Simples da Galeria</h1>
+    
+    <div class="debug-section">
+        <h2>📊 Status do Sistema</h2>
+        <div id="status-container"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🎛️ Controles</h2>
+        <button onclick="testLocalStorage()">Testar localStorage</button>
+        <button onclick="loadGalleryData()">Carregar Dados da Galeria</button>
+        <button onclick="renderGallery()">Renderizar Galeria</button>
+        <button onclick="clearData()">Limpar Dados</button>
+    </div>
+    
+    <div class="debug-section">
+        <h2>🖼️ Galeria</h2>
+        <div id="gallery-grid" class="gallery-grid"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>📝 Logs</h2>
+        <div id="logs" style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+
+    <script>
+        let galleryData = [];
+        
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.marginBottom = '5px';
+            logEntry.style.color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#6c757d';
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logs.appendChild(logEntry);
+            logs.scrollTop = logs.scrollHeight;
+            console.log(message);
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const container = document.getElementById('status-container');
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            container.appendChild(status);
+        }
+        
+        function testLocalStorage() {
+            log('Testando localStorage...');
+            try {
+                // Testar se localStorage funciona
+                localStorage.setItem('test', 'funcionando');
+                const testValue = localStorage.getItem('test');
+                if (testValue === 'funcionando') {
+                    log('✅ localStorage funcionando corretamente', 'success');
+                    updateStatus('localStorage: ✅ Funcionando', 'success');
+                    localStorage.removeItem('test');
+                } else {
+                    log('❌ localStorage não está funcionando', 'error');
+                    updateStatus('localStorage: ❌ Não funcionando', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro no localStorage: ${error.message}`, 'error');
+                updateStatus('localStorage: ❌ Erro', 'error');
+            }
+        }
+        
+        function loadGalleryData() {
+            log('Carregando dados da galeria...');
+            try {
+                const savedPhotos = localStorage.getItem('galleryPhotos');
+                if (savedPhotos) {
+                    galleryData = JSON.parse(savedPhotos);
+                    log(`✅ Dados carregados do localStorage: ${galleryData.length} itens`, 'success');
+                    updateStatus(`Dados: ✅ ${galleryData.length} itens carregados`, 'success');
+                } else {
+                    log('⚠️ Nenhum dado encontrado no localStorage, usando dados padrão', 'info');
+                    // Dados padrão
+                    galleryData = [
+                        {
+                            id: 1,
+                            title: 'Demolição Residencial - Casa de Madeira',
+                            description: 'Demolição completa de casa residencial de madeira.',
+                            image: 'assets/images/DemolicaoMadeira.jpg',
+                            category: 'residential',
+                            date: '2024-01-15',
+                            location: 'São Paulo, SP',
+                            photoIndex: 1,
+                            totalPhotos: 1
+                        },
+                        {
+                            id: 2,
+                            title: 'Demolição Comercial - Edifício de Concreto',
+                            description: 'Demolição de edifício comercial de concreto armado.',
+                            image: 'assets/images/DemolicaoRC.jpg',
+                            category: 'commercial',
+                            date: '2024-01-20',
+                            location: 'Rio de Janeiro, RJ',
+                            photoIndex: 1,
+                            totalPhotos: 1
+                        }
+                    ];
+                    log(`✅ Dados padrão carregados: ${galleryData.length} itens`, 'success');
+                    updateStatus(`Dados: ✅ ${galleryData.length} itens padrão`, 'success');
+                }
+            } catch (error) {
+                log(`❌ Erro ao carregar dados: ${error.message}`, 'error');
+                updateStatus('Dados: ❌ Erro ao carregar', 'error');
+            }
+        }
+        
+        function renderGallery() {
+            log('Renderizando galeria...');
+            const galleryGrid = document.getElementById('gallery-grid');
+            if (!galleryGrid) {
+                log('❌ Elemento gallery-grid não encontrado', 'error');
+                return;
+            }
+            
+            if (galleryData.length === 0) {
+                log('⚠️ Nenhum dado para renderizar', 'info');
+                galleryGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">Nenhuma foto encontrada</div>';
+                return;
+            }
+            
+            galleryGrid.innerHTML = '';
+            
+            galleryData.forEach((item, index) => {
+                log(`Renderizando item ${index + 1}: ${item.title}`);
+                
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" 
+                         onerror="this.src='assets/images/construction-site-1.jpg'; this.alt='Imagem não encontrada'; console.log('Erro ao carregar: ${item.image}');"
+                         onload="console.log('Imagem carregada: ${item.image}');">
+                    <div class="gallery-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.description}</p>
+                        <small>${item.location} - ${new Date(item.date).toLocaleDateString('pt-BR')}</small>
+                    </div>
+                `;
+                
+                galleryGrid.appendChild(galleryItem);
+            });
+            
+            log(`✅ Galeria renderizada com ${galleryData.length} itens`, 'success');
+            updateStatus(`Galeria: ✅ ${galleryData.length} itens renderizados`, 'success');
+        }
+        
+        function clearData() {
+            log('Limpando dados...');
+            localStorage.removeItem('galleryPhotos');
+            galleryData = [];
+            document.getElementById('gallery-grid').innerHTML = '';
+            document.getElementById('status-container').innerHTML = '';
+            document.getElementById('logs').innerHTML = '';
+            log('✅ Dados limpos', 'success');
+        }
+        
+        // Inicializar
+        window.addEventListener('load', () => {
+            log('Página carregada, iniciando testes...');
+            testLocalStorage();
+            loadGalleryData();
+            renderGallery();
+        });
+    </script>
+</body>
+</html>

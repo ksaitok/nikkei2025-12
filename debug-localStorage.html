@@ -194,12 +194,27 @@
                 }
                 
                 const localPhotos = JSON.parse(localData);
+                
+                // Agrupar por título para contar demolições únicas
+                const uniqueDemolitions = groupDemolitionsByTitle(localPhotos);
+                const uniqueTitles = Object.keys(uniqueDemolitions);
+                
                 const stats = {
-                    total: localPhotos.length,
-                    residential: localPhotos.filter(p => p.category === 'residential').length,
-                    commercial: localPhotos.filter(p => p.category === 'commercial').length,
-                    industrial: localPhotos.filter(p => p.category === 'industrial').length,
-                    fireDamage: localPhotos.filter(p => p.category === 'fire-damage').length
+                    total: uniqueTitles.length, // Demolições únicas
+                    residential: uniqueTitles.filter(title => 
+                        uniqueDemolitions[title].demolitions[0].category === 'residential'
+                    ).length,
+                    commercial: uniqueTitles.filter(title => 
+                        uniqueDemolitions[title].demolitions[0].category === 'commercial'
+                    ).length,
+                    industrial: uniqueTitles.filter(title => 
+                        uniqueDemolitions[title].demolitions[0].category === 'industrial'
+                    ).length,
+                    fireDamage: uniqueTitles.filter(title => 
+                        uniqueDemolitions[title].demolitions[0].category === 'fire-damage'
+                    ).length,
+                    totalPhotos: localPhotos.length, // Total de fotos
+                    uniqueDemolitions: uniqueTitles.length // Demolições únicas
                 };
                 
                 statsDiv.innerHTML = `
@@ -211,6 +226,34 @@
                     <div class="status error">❌ Erro ao calcular estatísticas: ${error.message}</div>
                 `;
             }
+        }
+        
+        // Função para agrupar demolições por título (mesma da página principal)
+        function groupDemolitionsByTitle(demolitions) {
+            const groups = {};
+            
+            demolitions.forEach(demolition => {
+                const title = demolition.title;
+                
+                if (!groups[title]) {
+                    groups[title] = {
+                        title: title,
+                        demolitions: [],
+                        totalImages: 0
+                    };
+                }
+                
+                groups[title].demolitions.push(demolition);
+                
+                // Contar imagens
+                if (demolition.images && demolition.images.length > 0) {
+                    groups[title].totalImages += demolition.images.length;
+                } else {
+                    groups[title].totalImages += 1; // Imagem padrão
+                }
+            });
+            
+            return groups;
         }
         
         function addTestData() {

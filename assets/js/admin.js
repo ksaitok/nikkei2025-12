@@ -658,7 +658,7 @@ class AdminManager {
     }
     
     // Atualizar grupo de demolição
-    updateDemolitionGroup(oldTitle) {
+    async updateDemolitionGroup(oldTitle) {
         // Verificar autenticação
         if (!this.requireAuthentication()) {
             return;
@@ -691,19 +691,27 @@ class AdminManager {
         
         // Adicionar novas fotos (se houver) ou manter as existentes
         if (images.length > 0 && images[0].size > 0) {
-            // Usar novas imagens
+            // Converter novas imagens para Data URL
+            const toDataURL = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+
             const baseId = Date.now();
-            const newPhotos = images.map((image, index) => ({
+            const dataUrls = await Promise.all(images.map((image) => toDataURL(image)));
+            const newPhotos = dataUrls.map((dataUrl, index) => ({
                 id: baseId + index,
                 title: newTitle,
                 description: description,
                 category: category,
                 date: date,
                 location: location,
-                image: URL.createObjectURL(image),
+                image: dataUrl,
                 demolitionGroup: `${newTitle}_${baseId}`,
                 photoIndex: index + 1,
-                totalPhotos: images.length,
+                totalPhotos: dataUrls.length,
                 details: description
             }));
             
@@ -831,7 +839,7 @@ class AdminManager {
     }
     
     // Lidar com adição de múltiplas fotos
-    handleAddPhoto() {
+    async handleAddPhoto() {
         // Verificar autenticação
         if (!this.requireAuthentication()) {
             return;
@@ -863,19 +871,27 @@ class AdminManager {
             return;
         }
         
-        // Criar múltiplas fotos para a mesma demolição (agrupadas por título)
+        // Converter arquivos para Data URL (persistente)
+        const toDataURL = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+
         const baseId = Date.now();
-        const newPhotos = images.map((image, index) => ({
+        const dataUrls = await Promise.all(images.map((image) => toDataURL(image)));
+        const newPhotos = dataUrls.map((dataUrl, index) => ({
             id: baseId + index,
             title: title, // Título único para agrupamento
             description: description,
             category: category,
             date: date,
             location: location,
-            image: URL.createObjectURL(image),
+            image: dataUrl,
             demolitionGroup: `${title}_${baseId}`, // Agrupar por título
             photoIndex: index + 1,
-            totalPhotos: images.length,
+            totalPhotos: dataUrls.length,
             details: description // Detalhes adicionais
         }));
         
@@ -929,7 +945,7 @@ class AdminManager {
     }
     
     // Atualizar foto
-    updatePhoto(id) {
+    async updatePhoto(id) {
         const form = document.getElementById('add-photo-form');
         const formData = new FormData(form);
         
@@ -947,7 +963,13 @@ class AdminManager {
         // Se uma nova imagem foi selecionada
         const newImage = formData.get('image');
         if (newImage && newImage.size > 0) {
-            this.photos[photoIndex].image = URL.createObjectURL(newImage);
+            const toDataURL = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+            this.photos[photoIndex].image = await toDataURL(newImage);
         }
         
         // Salvar no localStorage

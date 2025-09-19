@@ -784,17 +784,19 @@ class AdminManager {
     
     // Atualizar estatísticas
     updateStats() {
-        const totalPhotos = this.photos.length;
-        const residentialCount = this.photos.filter(p => p.category === 'residential').length;
-        const commercialCount = this.photos.filter(p => p.category === 'commercial').length;
-        const industrialCount = this.photos.filter(p => p.category === 'industrial').length;
-        
+        // Contar por demolições (grupos) em vez de fotos individuais
+        const groups = this.groupDemolitionsByTitle();
+        const totalDemolitions = groups.length;
+        const residentialCount = groups.filter(g => g.category === 'residential').length;
+        const commercialCount = groups.filter(g => g.category === 'commercial').length;
+        const industrialCount = groups.filter(g => g.category === 'industrial').length;
+
         const totalPhotosEl = document.getElementById('total-photos');
         const residentialCountEl = document.getElementById('residential-count');
         const commercialCountEl = document.getElementById('commercial-count');
         const industrialCountEl = document.getElementById('industrial-count');
-        
-        if (totalPhotosEl) totalPhotosEl.textContent = totalPhotos;
+
+        if (totalPhotosEl) totalPhotosEl.textContent = totalDemolitions;
         if (residentialCountEl) residentialCountEl.textContent = residentialCount;
         if (commercialCountEl) commercialCountEl.textContent = commercialCount;
         if (industrialCountEl) industrialCountEl.textContent = industrialCount;

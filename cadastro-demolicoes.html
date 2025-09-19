@@ -718,17 +718,35 @@
                 if (localData) {
                     try {
                         const localPhotos = JSON.parse(localData);
+                        console.log('📊 Dados brutos do localStorage:', localPhotos);
+                        
                         // Converter dados do localStorage para formato da API
-                        demolitions = localPhotos.map(photo => ({
-                            id: photo.id || Date.now() + Math.random(),
-                            title: photo.title,
-                            category: photo.category,
-                            description: photo.description,
-                            location: photo.location,
-                            date: photo.date,
-                            images: photo.images || [],
-                            image_count: photo.images ? photo.images.length : 0
-                        }));
+                        demolitions = localPhotos.map(photo => {
+                            console.log('🔄 Convertendo foto:', photo.title);
+                            console.log('📸 Imagens originais:', photo.images);
+                            console.log('🖼️ Propriedade image:', photo.image);
+                            
+                            const convertedPhoto = {
+                                id: photo.id || Date.now() + Math.random(),
+                                title: photo.title,
+                                category: photo.category,
+                                description: photo.description,
+                                location: photo.location,
+                                date: photo.date,
+                                images: photo.images || [],
+                                image_count: photo.images ? photo.images.length : 0
+                            };
+                            
+                            // Se não tem images mas tem image, usar image
+                            if (!convertedPhoto.images.length && photo.image) {
+                                convertedPhoto.images = [photo.image];
+                                convertedPhoto.image_count = 1;
+                                console.log('✅ Usando propriedade image:', photo.image);
+                            }
+                            
+                            console.log('✅ Foto convertida:', convertedPhoto);
+                            return convertedPhoto;
+                        });
                         console.log('✅ Dados carregados do localStorage:', demolitions.length, 'demolições');
                     } catch (error) {
                         console.error('Erro ao processar dados do localStorage:', error);
@@ -801,13 +819,19 @@
             const html = Object.values(groupedDemolitions).map(group => {
                 const demolition = group.demolitions[0]; // Usar a primeira demolição do grupo
                 const imageCount = group.totalImages;
+                const imageSrc = getDemolitionImage(demolition);
+                
+                console.log('🎯 Renderizando demolição:', demolition.title);
+                console.log('🖼️ Imagem selecionada:', imageSrc);
+                console.log('📊 Dados da demolição:', demolition);
                 
                 return `
                     <div class="demolition-card">
                         <div class="demolition-image">
-                            <img src="${getDemolitionImage(demolition)}" 
+                            <img src="${imageSrc}" 
                                  alt="${demolition.title}"
-                                 onerror="this.src='assets/images/construction-site-1.jpg'">
+                                 onload="console.log('✅ Imagem carregada:', '${imageSrc}')"
+                                 onerror="console.log('❌ Erro ao carregar imagem:', '${imageSrc}'); this.src='assets/images/construction-site-1.jpg'">
                             <div class="demolition-badge">${getCategoryName(demolition.category)}</div>
                             ${imageCount > 1 ? `<div class="image-count-badge">${imageCount} fotos</div>` : ''}
                         </div>
@@ -963,7 +987,15 @@
             console.log('📸 Imagens disponíveis:', demolition.images);
             console.log('📋 Tipo de demolition.images:', typeof demolition.images);
             console.log('📋 É array?', Array.isArray(demolition.images));
+            console.log('📋 Dados completos da demolição:', demolition);
             
+            // Verificar se tem propriedade 'image' (formato antigo)
+            if (demolition.image && typeof demolition.image === 'string') {
+                console.log('✅ Imagem encontrada na propriedade image:', demolition.image);
+                return demolition.image;
+            }
+            
+            // Verificar se tem propriedade 'images' (formato novo)
             if (demolition.images && demolition.images.length > 0) {
                 const firstImage = demolition.images[0];
                 console.log('🖼️ Primeira imagem:', firstImage);
@@ -991,7 +1023,7 @@
                 }
             }
             
-            console.log('⚠️ Usando imagem padrão');
+            console.log('⚠️ Nenhuma imagem encontrada, usando imagem padrão');
             return 'assets/images/construction-site-1.jpg';
         }
 
